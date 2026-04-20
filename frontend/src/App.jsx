@@ -53,7 +53,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-8">
+    <div className="min-h-screen text-white px-12 py-8" style={{ background: '#141414' }}>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Netflix</h1>
         <ProfileMenu user={user} onLogout={logout} />

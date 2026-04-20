@@ -1,37 +1,104 @@
+import { useState, useRef } from 'react'
 import { useQuery } from '@apollo/client/react'
 import { gql } from '@apollo/client'
+import MovieCard from './MovieCard.jsx'
 
 const MOVIES_QUERY = gql`
   query Movies($limit: Int, $offset: Int) {
     movies(limit: $limit, offset: $offset) {
       totalCount
+      hasNextPage
       movies {
-        id
-        title
-        releaseYear
+        id title releaseYear rating voteAverage
+        genres { name }
       }
     }
   }
 `
 
+function MovieRow({ title, movies }) {
+  const ref = useRef()
+  return (
+    <div className="mb-10">
+      <h2 className="text-white font-semibold text-lg mb-3">{title}</h2>
+      <div className="relative group">
+        <button
+          onClick={() => ref.current.scrollBy({ left: -600, behavior: 'smooth' })}
+          className="absolute left-0 top-0 bottom-0 z-10 px-2 bg-gradient-to-r from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition text-white text-2xl"
+        >‹</button>
+        <div ref={ref} className="flex gap-3 overflow-x-auto pb-8" style={{ scrollbarWidth: 'none' }}>
+          {movies.map((m) => <MovieCard key={m.id} movie={m} />)}
+        </div>
+        <button
+          onClick={() => ref.current.scrollBy({ left: 600, behavior: 'smooth' })}
+          className="absolute right-0 top-0 bottom-0 z-10 px-2 bg-gradient-to-l from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition text-white text-2xl"
+        >›</button>
+      </div>
+    </div>
+  )
+}
+
+const PAGE_SIZE = 100
+
 export default function MovieList() {
-  const { data, loading, error } = useQuery(MOVIES_QUERY, {
-    variables: { limit: 20, offset: 0 },
+  const [offset, setOffset] = useState(0)
+  const { data, loading } = useQuery(MOVIES_QUERY, {
+    variables: { limit: PAGE_SIZE, offset },
   })
 
-  if (loading) return <p className="text-gray-400">Loading...</p>
-  if (error) return <p className="text-red-400">Error: {error.message}</p>
+  if (loading) return (
+    <div className="space-y-10">
+      {[1, 2, 3].map((i) => (
+        <div key={i}>
+          <div className="h-4 w-32 rounded mb-3 animate-pulse bg-gray-800" />
+          <div className="flex gap-3">
+            {Array.from({ length: 6 }).map((_, j) => (
+              <div key={j} className="rounded flex-shrink-0 animate-pulse bg-gray-800" style={{ width: 180, height: 100 }} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+
+  if (!data) return null
+
+  const { movies, totalCount, hasNextPage } = data.movies
+
+  const genreMap = {}
+  movies.forEach((m) => {
+    m.genres.forEach((g) => {
+      if (!genreMap[g.name]) genreMap[g.name] = []
+      genreMap[g.name].push(m)
+    })
+  })
+
+  const rows = Object.entries(genreMap)
+    .filter(([, ms]) => ms.length >= 4)
+    .sort((a, b) => b[1].length - a[1].length)
+    .slice(0, 8)
 
   return (
     <div>
-      <p className="text-gray-500 text-sm mb-4">{data.movies.totalCount} movies total</p>
-      <ul className="space-y-2">
-        {data.movies.movies.map((movie) => (
-          <li key={movie.id} className="text-white">
-            {movie.title} <span className="text-gray-500 text-sm">({movie.releaseYear})</span>
-          </li>
-        ))}
-      </ul>
+      {rows.map(([genre, ms]) => <MovieRow key={genre} title={genre} movies={ms} />)}
+
+      <div className="flex justify-center items-center gap-6 py-6">
+        <button
+          onClick={() => setOffset((o) => Math.max(0, o - PAGE_SIZE))}
+          disabled={offset === 0}
+          className="px-5 py-2 rounded text-sm font-medium disabled:opacity-30 transition"
+          style={{ background: '#E50914' }}
+        >← Previous</button>
+        <span className="text-gray-500 text-sm">
+          {offset + 1}–{Math.min(offset + PAGE_SIZE, totalCount)} of {totalCount.toLocaleString()}
+        </span>
+        <button
+          onClick={() => setOffset((o) => o + PAGE_SIZE)}
+          disabled={!hasNextPage}
+          className="px-5 py-2 rounded text-sm font-medium disabled:opacity-30 transition"
+          style={{ background: '#E50914' }}
+        >Next →</button>
+      </div>
     </div>
   )
 }
