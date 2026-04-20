@@ -31,10 +31,10 @@ passport.use(new GoogleStrategy(
   async (accessToken, refreshToken, profile, done) => {
     const email = profile.emails[0].value
     const name = profile.displayName
+    const picture = profile.photos?.[0]?.value ?? null
 
-    // Try login first, register if not found
     const jwt = await loginOrRegister(email, name)
-    done(null, { email, name, jwt })
+    done(null, { email, name, picture, jwt })
   }
 ))
 
@@ -74,8 +74,9 @@ app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'em
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: `${CLIENT_URL}?error=auth_failed` }),
   (req, res) => {
-    const token = req.user?.jwt
-    res.redirect(`${CLIENT_URL}?token=${token}`)
+    const { jwt, name, picture } = req.user
+    const params = new URLSearchParams({ token: jwt, name, picture: picture ?? '' })
+    res.redirect(`${CLIENT_URL}?${params}`)
   }
 )
 
