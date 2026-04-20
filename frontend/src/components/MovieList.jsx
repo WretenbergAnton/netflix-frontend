@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client/react'
 import { gql } from '@apollo/client'
 import MovieCard from './MovieCard.jsx'
 import PopularRow from './PopularRow.jsx'
+import { useFavoritesContext } from '../context/FavoritesContext.jsx'
 
 const MOVIES_QUERY = gql`
   query Movies($limit: Int, $offset: Int) {
@@ -76,6 +77,7 @@ export default function MovieList() {
     })
   })
 
+  const { favorites } = useFavoritesContext()
   const HIDDEN_GENRES = new Set(['Romance'])
 
   const rows = Object.entries(genreMap)
@@ -86,6 +88,7 @@ export default function MovieList() {
   return (
     <div>
       <PopularRow />
+      {favorites.length > 0 && <MovieRow title="My List" movies={favorites} />}
       {rows.map(([genre, ms]) => <MovieRow key={genre} title={genre} movies={ms} />)}
 
       <div className="flex justify-center items-center gap-6 py-6">

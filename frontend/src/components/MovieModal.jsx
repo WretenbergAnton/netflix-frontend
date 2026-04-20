@@ -1,8 +1,11 @@
 import { useEffect } from 'react'
 import { useTMDB } from '../hooks/useTMDB.js'
+import { useFavoritesContext } from '../context/FavoritesContext.jsx'
 
 export default function MovieModal({ movie, onClose }) {
   const tmdb = useTMDB(movie.title, movie.releaseYear)
+  const { toggle, isSaved } = useFavoritesContext()
+  const saved = isSaved(movie.id)
 
   useEffect(() => {
     function onKey(e) { if (e.key === 'Escape') onClose() }
@@ -66,15 +69,24 @@ export default function MovieModal({ movie, onClose }) {
             <p className="text-gray-300 text-sm leading-relaxed mb-6">{tmdb.overview}</p>
           )}
 
-          <a
-            href={`https://www.google.com/search?q=watch+${encodeURIComponent(movie.title)}+${movie.releaseYear ?? ''}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded font-semibold text-sm transition hover:opacity-80"
-            style={{ background: '#E50914', color: 'white' }}
-          >
-            ▶ Watch
-          </a>
+          <div className="flex gap-3">
+            <a
+              href={`https://www.google.com/search?q=watch+${encodeURIComponent(movie.title)}+${movie.releaseYear ?? ''}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded font-semibold text-sm transition hover:opacity-80"
+              style={{ background: '#E50914', color: 'white' }}
+            >
+              ▶ Watch
+            </a>
+            <button
+              onClick={() => toggle(movie)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded font-semibold text-sm transition hover:opacity-80"
+              style={{ background: saved ? '#E50914' : '#2a2a2a', color: 'white' }}
+            >
+              {saved ? '♥ Saved' : '♡ Save'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
