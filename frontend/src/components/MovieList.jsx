@@ -9,7 +9,7 @@ const MOVIES_QUERY = gql`
       totalCount
       hasNextPage
       movies {
-        id title releaseYear rating voteAverage
+        id title releaseYear rating voteAverage popularity
         genres { name }
       }
     }
@@ -63,7 +63,9 @@ export default function MovieList() {
 
   if (!data) return null
 
-  const { movies, totalCount, hasNextPage } = data.movies
+  const { movies: raw, totalCount, hasNextPage } = data.movies
+
+  const movies = [...raw].sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
 
   const genreMap = {}
   movies.forEach((m) => {

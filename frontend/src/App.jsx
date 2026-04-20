@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import MovieList from './components/MovieList.jsx'
+import SearchBar from './components/SearchBar.jsx'
 import ProfileMenu from './components/ProfileMenu.jsx'
 
 const AUTH_SERVER = 'http://localhost:3001'
@@ -58,6 +59,7 @@ function App() {
         <h1 className="text-3xl font-bold">Netflix</h1>
         <ProfileMenu user={user} onLogout={logout} />
       </div>
+      <SearchBar />
       <MovieList />
     </div>
   )
