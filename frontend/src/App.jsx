@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import MovieList from './components/MovieList.jsx'
+import ProfileMenu from './components/ProfileMenu.jsx'
 
 const AUTH_SERVER = 'http://localhost:3001'
 
@@ -55,22 +56,7 @@ function App() {
     <div className="min-h-screen bg-gray-950 text-white p-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Netflix</h1>
-        <div className="flex items-center gap-3">
-          {user?.picture && (
-            <img
-              src={user.picture}
-              alt={user.name}
-              className="w-8 h-8 rounded-full"
-            />
-          )}
-          <span className="text-gray-300 text-sm">{user?.name}</span>
-          <button
-            onClick={logout}
-            className="text-gray-400 hover:text-white transition text-sm"
-          >
-            Sign out
-          </button>
-        </div>
+        <ProfileMenu user={user} onLogout={logout} />
       </div>
       <MovieList />
     </div>
