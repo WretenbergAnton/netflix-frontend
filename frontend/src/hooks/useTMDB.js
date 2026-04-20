@@ -54,9 +54,11 @@ export function useTMDB(title, year) {
 
         const entry = result ? {
           poster: result.poster_path ? `https://image.tmdb.org/t/p/w300${result.poster_path}` : null,
+          backdrop: result.backdrop_path ? `https://image.tmdb.org/t/p/w780${result.backdrop_path}` : null,
           rating: result.vote_average ?? null,
           voteCount: result.vote_count ?? null,
-        } : { poster: null, rating: null, voteCount: null }
+          overview: result.overview ?? null,
+        } : { poster: null, backdrop: null, rating: null, voteCount: null, overview: null }
 
         cache.set(key, entry)
         setData(entry)

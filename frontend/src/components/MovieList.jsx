@@ -54,7 +54,7 @@ export default function MovieList() {
           <div className="h-4 w-32 rounded mb-3 animate-pulse bg-gray-800" />
           <div className="flex gap-3">
             {Array.from({ length: 6 }).map((_, j) => (
-              <div key={j} className="rounded flex-shrink-0 animate-pulse bg-gray-800" style={{ width: 160, height: 240 }} />
+              <div key={j} className="rounded flex-shrink-0 animate-pulse bg-gray-800" style={{ width: 200, height: 300 }} />
             ))}
           </div>
         </div>

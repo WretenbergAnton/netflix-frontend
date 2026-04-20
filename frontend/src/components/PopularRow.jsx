@@ -13,12 +13,86 @@ const SEARCH = gql`
 `
 
 const POPULAR_TITLES = [
-  'Avengers', 'Iron Man', 'Spider-Man', 'Star Wars',
-  'Lord of the Rings', 'The Dark Knight', 'Inception',
-  'Wolf of Wall Street', 'Extraction', 'Interstellar',
-  'Gladiator', 'John Wick', 'Mad Max', 'Top Gun',
-  'Mission Impossible', 'Fast and Furious',
-]
+  'Avengers: Endgame',
+  'Avengers: Infinity War',
+  'Iron Man',
+  'Captain America: The Winter Soldier',
+  'Spider-Man: No Way Home',
+  'The Dark Knight',
+  'The Batman',
+  'Black Panther',
+  'Deadpool',
+  'Logan',
+
+  'Interstellar',
+  'Inception',
+  'Dune',
+  'Dune: Part Two',
+  'The Matrix',
+  'Blade Runner 2049',
+  'Arrival',
+  'Gravity',
+  'Tenet',
+  'Edge of Tomorrow',
+
+  'Gladiator',
+  'Mad Max: Fury Road',
+  'John Wick',
+  'John Wick: Chapter 4',
+  'Mission: Impossible - Fallout',
+  'Mission: Impossible - Dead Reckoning',
+  'Top Gun: Maverick',
+  'Pirates of the Caribbean: The Curse of the Black Pearl',
+
+  'The Lord of the Rings: The Fellowship of the Ring',
+  'The Lord of the Rings: The Two Towers',
+  'The Lord of the Rings: The Return of the King',
+  'Harry Potter and the Sorcerer’s Stone',
+  'Harry Potter and the Deathly Hallows Part 2',
+  'The Hobbit: An Unexpected Journey',
+
+  'Oppenheimer',
+  'The Shawshank Redemption',
+  'Forrest Gump',
+  'Fight Club',
+  'The Social Network',
+  'Whiplash',
+  'Parasite',
+  'Joker',
+
+  'The Wolf of Wall Street',
+  'Goodfellas',
+  'The Godfather',
+  'The Godfather Part II',
+  'Scarface',
+  'The Departed',
+
+  'Superbad',
+  'Step Brothers',
+  'The Hangover',
+  '21 Jump Street',
+  'Deadpool',
+  'Mean Girls',
+
+  'Titanic',
+  'La La Land',
+  'The Notebook',
+  'Pride & Prejudice',
+
+  'The Conjuring',
+  'Get Out',
+  'A Quiet Place',
+  'It',
+  'Hereditary',
+  'The Nun',
+
+  'Barbie',
+  'Everything Everywhere All at Once',
+  'The Menu',
+  'Glass Onion: A Knives Out Mystery',
+  'No Time to Die',
+  'Doctor Strange in the Multiverse of Madness',
+];
 
 export default function PopularRow() {
   const client = useApolloClient()
