@@ -124,14 +124,14 @@ export default function PopularRow() {
       <div className="relative group">
         <button
           onClick={() => ref.current.scrollBy({ left: -600, behavior: 'smooth' })}
-          className="absolute left-0 top-0 bottom-0 z-10 px-2 bg-gradient-to-r from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition text-white text-2xl"
+          className="absolute left-0 top-0 bottom-0 z-20 px-2 bg-gradient-to-r from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition text-white text-2xl"
         >‹</button>
         <div ref={ref} className="flex gap-3 overflow-x-auto pb-8" style={{ scrollbarWidth: 'none' }}>
           {movies.map((m) => <MovieCard key={m.id} movie={m} />)}
         </div>
         <button
           onClick={() => ref.current.scrollBy({ left: 600, behavior: 'smooth' })}
-          className="absolute right-0 top-0 bottom-0 z-10 px-2 bg-gradient-to-l from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition text-white text-2xl"
+          className="absolute right-0 top-0 bottom-0 z-20 px-2 bg-gradient-to-l from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition text-white text-2xl"
         >›</button>
       </div>
     </div>
