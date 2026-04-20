@@ -5,7 +5,6 @@ const AUTH_SERVER = 'http://localhost:3001'
 function App() {
   const [token, setToken] = useState(() => localStorage.getItem('jwt'))
 
-  // Pick up token from OAuth redirect (?token=...)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const t = params.get('token')
@@ -45,7 +44,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-950 text-white p-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Netflix Movies</h1>
+        <h1 className="text-3xl font-bold">Netflix</h1>
         <button
           onClick={logout}
           className="text-gray-400 hover:text-white transition text-sm"
@@ -53,7 +52,7 @@ function App() {
           Sign out
         </button>
       </div>
-      <p className="text-gray-400">Logged in — movies coming soon.</p>
+      <p className="text-gray-400">You are logged in</p>
     </div>
   )
 }
