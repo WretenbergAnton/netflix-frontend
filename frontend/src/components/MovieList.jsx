@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { useQuery } from '@apollo/client/react'
 import { gql } from '@apollo/client'
 import MovieCard from './MovieCard.jsx'
+import PopularRow from './PopularRow.jsx'
 
 const MOVIES_QUERY = gql`
   query Movies($limit: Int, $offset: Int) {
@@ -53,7 +54,7 @@ export default function MovieList() {
           <div className="h-4 w-32 rounded mb-3 animate-pulse bg-gray-800" />
           <div className="flex gap-3">
             {Array.from({ length: 6 }).map((_, j) => (
-              <div key={j} className="rounded flex-shrink-0 animate-pulse bg-gray-800" style={{ width: 180, height: 100 }} />
+              <div key={j} className="rounded flex-shrink-0 animate-pulse bg-gray-800" style={{ width: 160, height: 240 }} />
             ))}
           </div>
         </div>
@@ -75,13 +76,16 @@ export default function MovieList() {
     })
   })
 
+  const HIDDEN_GENRES = new Set(['Romance'])
+
   const rows = Object.entries(genreMap)
-    .filter(([, ms]) => ms.length >= 4)
+    .filter(([genre, ms]) => ms.length >= 4 && !HIDDEN_GENRES.has(genre))
     .sort((a, b) => b[1].length - a[1].length)
     .slice(0, 8)
 
   return (
     <div>
+      <PopularRow />
       {rows.map(([genre, ms]) => <MovieRow key={genre} title={genre} movies={ms} />)}
 
       <div className="flex justify-center items-center gap-6 py-6">

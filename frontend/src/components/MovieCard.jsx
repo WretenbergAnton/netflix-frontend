@@ -13,7 +13,7 @@ export default function MovieCard({ movie }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className="relative flex-shrink-0 rounded-md cursor-pointer transition-transform duration-200 overflow-hidden"
-      style={{ width: 240, height: 135, transform: hovered ? 'scale(1.06)' : 'scale(1)', zIndex: hovered ? 10 : 1 }}
+      style={{ width: 160, height: 240, transform: hovered ? 'scale(1.06)' : 'scale(1)', zIndex: hovered ? 10 : 1 }}
     >
       {/* Poster or fallback color */}
       {tmdb?.poster ? (

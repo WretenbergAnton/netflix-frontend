@@ -29,7 +29,7 @@ export function useTMDB(title, year) {
           result = json.results?.[0] ?? null
         }
 
-        // Fall back to title-only if no result
+        // Fall back to title-only
         if (!result) {
           const res = await fetch(
             `https://api.themoviedb.org/3/search/movie?${new URLSearchParams({ query: title })}`,
@@ -37,6 +37,19 @@ export function useTMDB(title, year) {
           )
           const json = await res.json()
           result = json.results?.[0] ?? null
+        }
+
+        // Fall back to base title before colon/dash (e.g. "John Wick" from "John Wick: Chapter 4")
+        if (!result) {
+          const base = title.split(/[:\-–]/)[0].trim()
+          if (base !== title) {
+            const res = await fetch(
+              `https://api.themoviedb.org/3/search/movie?${new URLSearchParams({ query: base, ...(year ? { year } : {}) })}`,
+              opts
+            )
+            const json = await res.json()
+            result = json.results?.[0] ?? null
+          }
         }
 
         const entry = result ? {
