@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import MovieList from './components/MovieList.jsx'
 
 const AUTH_SERVER = 'http://localhost:3001'
 
@@ -52,7 +53,7 @@ function App() {
           Sign out
         </button>
       </div>
-      <p className="text-gray-400">You are logged in</p>
+      <MovieList />
     </div>
   )
 }
