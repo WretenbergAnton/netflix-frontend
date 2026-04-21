@@ -11,6 +11,7 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
 const GRAPHQL_URL = process.env.VITE_GRAPHQL_URL || 'https://netflix-graphql-api-production.up.railway.app/graphql'
 
 app.use(cors({ origin: CLIENT_URL, credentials: true }))
+app.use(express.json())
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret',
   resave: false,
@@ -79,6 +80,7 @@ app.get('/auth/google/callback',
     res.redirect(`${CLIENT_URL}?${params}`)
   }
 )
+
 
 app.get('/auth/logout', (req, res) => {
   req.logout(() => {

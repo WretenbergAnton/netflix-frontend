@@ -31,6 +31,7 @@ export default function MovieModal({ movie, onClose }) {
               src={tmdb.backdrop ?? tmdb.poster}
               alt={movie.title}
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           ) : (
             <div className="w-full h-full bg-gray-800" />

@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useQuery } from '@apollo/client/react'
+import { useApolloClient } from '@apollo/client/react'
 import { gql } from '@apollo/client'
 import MovieCard from './MovieCard.jsx'
 import PopularRow from './PopularRow.jsx'
@@ -40,15 +41,46 @@ function MovieRow({ title, movies }) {
   )
 }
 
-const PAGE_SIZE = 100
+const PAGE_SIZE = 500
+const HIDDEN_GENRES = new Set(['Romance'])
 
-export default function MovieList() {
-  const [offset, setOffset] = useState(0)
-  const { data, loading } = useQuery(MOVIES_QUERY, {
-    variables: { limit: PAGE_SIZE, offset },
-  })
+function GenreRows({ baseOffset }) {
+  const client = useApolloClient()
+  const [genreMap, setGenreMap] = useState({})
+  const { favorites } = useFavoritesContext()
 
-  if (loading) return (
+  useEffect(() => {
+    setGenreMap({})
+    async function load() {
+      // Fetch 5 pages of 100 starting from baseOffset
+      const pages = await Promise.all(
+        Array.from({ length: 5 }, (_, i) =>
+          client.query({ query: MOVIES_QUERY, variables: { limit: 100, offset: baseOffset + i * 100 } }).catch(() => null)
+        )
+      )
+      const all = pages
+        .flatMap((r) => r?.data?.movies?.movies ?? [])
+        .filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i)
+        .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
+
+      const map = {}
+      all.forEach((m) => {
+        m.genres.forEach((g) => {
+          if (!map[g.name]) map[g.name] = []
+          map[g.name].push(m)
+        })
+      })
+      setGenreMap(map)
+    }
+    load()
+  }, [client, baseOffset])
+
+  const rows = Object.entries(genreMap)
+    .filter(([genre, ms]) => ms.length >= 6 && !HIDDEN_GENRES.has(genre))
+    .sort((a, b) => b[1].length - a[1].length)
+    .slice(0, 10)
+
+  if (rows.length === 0) return (
     <div className="space-y-10">
       {[1, 2, 3].map((i) => (
         <div key={i}>
@@ -63,44 +95,40 @@ export default function MovieList() {
     </div>
   )
 
-  if (!data) return null
+  return (
+    <>
+      {favorites.length > 0 && <MovieRow title="My List" movies={favorites} />}
+      {rows.map(([genre, ms]) => <MovieRow key={genre} title={genre} movies={ms} />)}
+    </>
+  )
+}
 
-  const { movies: raw, totalCount, hasNextPage } = data.movies
-
-  const movies = [...raw].sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
-
-  const genreMap = {}
-  movies.forEach((m) => {
-    m.genres.forEach((g) => {
-      if (!genreMap[g.name]) genreMap[g.name] = []
-      genreMap[g.name].push(m)
-    })
+export default function MovieList() {
+  const [offset, setOffset] = useState(0)
+  const { data } = useQuery(MOVIES_QUERY, {
+    variables: { limit: 1, offset },
   })
 
-  const { favorites } = useFavoritesContext()
-  const HIDDEN_GENRES = new Set(['Romance'])
-
-  const rows = Object.entries(genreMap)
-    .filter(([genre, ms]) => ms.length >= 4 && !HIDDEN_GENRES.has(genre))
-    .sort((a, b) => b[1].length - a[1].length)
-    .slice(0, 8)
+  const totalCount = data?.movies?.totalCount ?? 0
+  const hasNextPage = data?.movies?.hasNextPage ?? false
 
   return (
     <div>
       <PopularRow />
-      {favorites.length > 0 && <MovieRow title="My List" movies={favorites} />}
-      {rows.map(([genre, ms]) => <MovieRow key={genre} title={genre} movies={ms} />)}
+      <GenreRows baseOffset={offset} />
 
-      <div className="flex justify-center items-center gap-6 py-6">
+      <div className="flex justify-center items-center gap-6 py-6 mt-4">
         <button
           onClick={() => setOffset((o) => Math.max(0, o - PAGE_SIZE))}
           disabled={offset === 0}
           className="px-5 py-2 rounded text-sm font-medium disabled:opacity-30 transition"
           style={{ background: '#E50914' }}
         >← Previous</button>
-        <span className="text-gray-500 text-sm">
-          {offset + 1}–{Math.min(offset + PAGE_SIZE, totalCount)} of {totalCount.toLocaleString()}
-        </span>
+        {totalCount > 0 && (
+          <span className="text-gray-500 text-sm">
+            {offset + 1}–{Math.min(offset + PAGE_SIZE, totalCount)} of {totalCount.toLocaleString()} movies
+          </span>
+        )}
         <button
           onClick={() => setOffset((o) => o + PAGE_SIZE)}
           disabled={!hasNextPage}

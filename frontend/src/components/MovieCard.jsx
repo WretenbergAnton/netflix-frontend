@@ -23,7 +23,7 @@ export default function MovieCard({ movie }) {
         style={{ width: 200, height: 300, transform: hovered ? 'scale(1.06)' : 'scale(1)', zIndex: hovered ? 10 : 1 }}
       >
         {tmdb?.poster ? (
-          <img src={tmdb.poster} alt={movie.title} className="w-full h-full object-cover" />
+          <img src={tmdb.poster} alt={movie.title} className="w-full h-full object-cover" loading="lazy" />
         ) : (
           <div className="w-full h-full" style={{ background: bg }} />
         )}

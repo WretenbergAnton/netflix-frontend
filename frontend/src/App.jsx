@@ -4,6 +4,7 @@ import SearchBar from './components/SearchBar.jsx'
 import ProfileMenu from './components/ProfileMenu.jsx'
 import HeroBanner from './components/HeroBanner.jsx'
 import MyListPage from './components/MyListPage.jsx'
+import ChartsPage from './components/ChartsPage.jsx'
 import { useFavoritesContext } from './context/FavoritesContext.jsx'
 
 const AUTH_SERVER = 'http://localhost:3001'
@@ -43,6 +44,7 @@ function AppContent({ user, logout }) {
 
         <div className="flex items-center gap-6 mr-8 flex-shrink-0">
           {navLink('Home', 'home')}
+          {navLink('Stats', 'stats')}
           <button
             onClick={() => setPage('mylist')}
             className="text-sm font-medium transition flex items-center gap-1"
@@ -74,6 +76,7 @@ function AppContent({ user, logout }) {
       )}
 
       {page === 'mylist' && <MyListPage />}
+      {page === 'stats' && <ChartsPage />}
     </div>
   )
 }
