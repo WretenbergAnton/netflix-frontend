@@ -15,6 +15,7 @@ const SEARCH_QUERY = gql`
 export default function SearchBar() {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
+  const [focused, setFocused] = useState(false)
   const [search, { data, loading }] = useLazyQuery(SEARCH_QUERY)
   const ref = useRef()
 
@@ -46,10 +47,11 @@ export default function SearchBar() {
           type="text"
           value={query}
           onChange={handleChange}
-          onFocus={() => query.length >= 2 && setOpen(true)}
+          onFocus={() => { setFocused(true); query.length >= 2 && setOpen(true) }}
+          onBlur={() => setFocused(false)}
           placeholder="Search movies..."
           className="w-full pl-9 pr-4 py-2 rounded-lg text-white text-sm outline-none transition"
-          style={{ background: '#2a2a2a', border: '1px solid #E50914' }}
+          style={{ background: '#2a2a2a', border: `1px solid ${focused || query.length > 0 ? '#E50914' : '#444'}` }}
         />
       </div>
 

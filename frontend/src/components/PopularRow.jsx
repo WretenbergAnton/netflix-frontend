@@ -119,7 +119,7 @@ export default function PopularRow() {
   if (movies.length === 0) return null
 
   return (
-    <div className="mb-10">
+    <div className="mb-10 pt-8">
       <h2 className="text-white font-semibold text-lg mb-3">Popular</h2>
       <div className="relative group">
         <button

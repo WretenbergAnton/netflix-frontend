@@ -31,25 +31,35 @@ export default function MovieCard({ movie }) {
         <div className="absolute inset-0"
           style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%)' }} />
 
-        {/* Heart button — always visible when saved, else on hover */}
-        {(hovered || saved) && (
+        {/* Heart — always visible when saved */}
+        {saved && !hovered && (
           <button
             onClick={(e) => { e.stopPropagation(); toggle(movie) }}
-            className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full transition"
-            style={{ background: 'rgba(0,0,0,0.6)', color: saved ? '#E50914' : 'white', fontSize: 15 }}
-          >
-            {saved ? '♥' : '♡'}
-          </button>
+            className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full"
+            style={{ background: 'rgba(0,0,0,0.6)', color: '#E50914', fontSize: 15 }}
+          >♥</button>
         )}
 
-        <div className="absolute bottom-0 left-0 right-0 p-3">
-          <p className="text-white text-sm font-semibold leading-tight line-clamp-1">{movie.title}</p>
-        </div>
+        {/* Title at bottom — hidden on hover */}
+        {!hovered && (
+          <div className="absolute bottom-0 left-0 right-0 p-3">
+            <p className="text-white text-sm font-semibold leading-tight line-clamp-1">{movie.title}</p>
+          </div>
+        )}
 
         {hovered && (
           <div className="absolute inset-0 p-3 flex flex-col justify-between"
             style={{ background: 'rgba(0,0,0,0.72)' }}>
-            <p className="text-white text-sm font-semibold leading-tight line-clamp-2">{movie.title}</p>
+            <div className="flex justify-between items-start gap-2">
+              <p className="text-white text-sm font-semibold leading-tight line-clamp-2">{movie.title}</p>
+              <button
+                onClick={(e) => { e.stopPropagation(); toggle(movie) }}
+                className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full transition"
+                style={{ background: 'rgba(0,0,0,0.6)', color: saved ? '#E50914' : 'white', fontSize: 15 }}
+              >
+                {saved ? '♥' : '♡'}
+              </button>
+            </div>
             <div>
               <p className="text-yellow-400 text-xs font-bold">★ {tmdb?.rating?.toFixed(1) ?? '—'}</p>
               <p className="text-gray-300 text-xs mt-0.5">{movie.releaseYear} · {movie.rating || 'NR'}</p>
