@@ -1,6 +1,30 @@
 import { useEffect } from 'react'
 import { useTMDB } from '../hooks/useTMDB.js'
+import { useActorImage } from '../hooks/useActorImage.js'
 import { useFavoritesContext } from '../context/FavoritesContext.jsx'
+
+function ActorCard({ actor }) {
+  const data = useActorImage(actor.name)
+  return (
+    <a
+      href={`https://www.imdb.com/find/?q=${encodeURIComponent(actor.name)}&s=nm`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex flex-col items-center gap-1.5 w-20 hover:opacity-80 transition"
+    >
+      <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0" style={{ background: '#2a2a2a' }}>
+        {data?.image
+          ? <img src={data.image} alt={actor.name} className="w-full h-full object-cover" loading="lazy" />
+          : <div className="w-full h-full flex items-center justify-center text-gray-500 text-lg">
+              {actor.name[0]}
+            </div>
+        }
+      </div>
+      <p className="text-white text-xs font-medium text-center leading-tight line-clamp-2">{actor.name}</p>
+      {actor.character && <p className="text-gray-500 text-xs text-center line-clamp-1">{actor.character}</p>}
+    </a>
+  )
+}
 
 export default function MovieModal({ movie, onClose }) {
   const tmdb = useTMDB(movie.title, movie.releaseYear)
@@ -73,12 +97,9 @@ export default function MovieModal({ movie, onClose }) {
           {movie.actors?.length > 0 && (
             <div className="mb-6">
               <p className="text-gray-500 text-xs uppercase tracking-wide mb-3">Cast</p>
-              <div className="flex flex-wrap gap-2">
-                {movie.actors.slice(0, 8).map((a) => (
-                  <div key={a.name} className="px-3 py-1.5 rounded-lg text-xs" style={{ background: '#2a2a2a' }}>
-                    <p className="text-white font-medium">{a.name}</p>
-                    {a.character && <p className="text-gray-500 mt-0.5">{a.character}</p>}
-                  </div>
+              <div className="flex gap-4 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
+                {movie.actors.slice(0, 10).map((a) => (
+                  <ActorCard key={a.name} actor={a} />
                 ))}
               </div>
             </div>
