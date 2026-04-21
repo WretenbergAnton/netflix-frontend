@@ -70,6 +70,20 @@ export default function MovieModal({ movie, onClose }) {
             <p className="text-gray-300 text-sm leading-relaxed mb-6">{tmdb.overview}</p>
           )}
 
+          {movie.actors?.length > 0 && (
+            <div className="mb-6">
+              <p className="text-gray-500 text-xs uppercase tracking-wide mb-3">Cast</p>
+              <div className="flex flex-wrap gap-2">
+                {movie.actors.slice(0, 8).map((a) => (
+                  <div key={a.name} className="px-3 py-1.5 rounded-lg text-xs" style={{ background: '#2a2a2a' }}>
+                    <p className="text-white font-medium">{a.name}</p>
+                    {a.character && <p className="text-gray-500 mt-0.5">{a.character}</p>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="flex gap-3">
             <a
               href={`https://www.google.com/search?q=watch+${encodeURIComponent(movie.title)}+${movie.releaseYear ?? ''}`}

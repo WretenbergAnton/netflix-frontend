@@ -14,6 +14,7 @@ const MOVIES_QUERY = gql`
       movies {
         id title releaseYear rating voteAverage popularity
         genres { name }
+        actors { name character }
       }
     }
   }

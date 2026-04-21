@@ -8,6 +8,7 @@ const SEARCH_QUERY = gql`
     searchMovies(title: $title) {
       id title releaseYear rating voteAverage popularity
       genres { name }
+      actors { name character }
     }
   }
 `
