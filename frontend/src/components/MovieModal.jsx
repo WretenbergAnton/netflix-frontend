@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTMDB } from '../hooks/useTMDB.js'
+import { useTrailer } from '../hooks/useTrailer.js'
 import { useActorImage } from '../hooks/useActorImage.js'
 import { useFavoritesContext } from '../context/FavoritesContext.jsx'
 
@@ -28,6 +29,8 @@ function ActorCard({ actor }) {
 
 export default function MovieModal({ movie, onClose }) {
   const tmdb = useTMDB(movie.title, movie.releaseYear)
+  const trailerKey = useTrailer(tmdb?.tmdbId)
+  const [showTrailer, setShowTrailer] = useState(false)
   const { toggle, isSaved } = useFavoritesContext()
   const saved = isSaved(movie.id)
 
@@ -50,7 +53,14 @@ export default function MovieModal({ movie, onClose }) {
       >
         {/* Backdrop or poster */}
         <div className="relative" style={{ height: 320 }}>
-          {tmdb?.backdrop || tmdb?.poster ? (
+          {showTrailer && trailerKey ? (
+            <iframe
+              src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`}
+              className="w-full h-full"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+            />
+          ) : tmdb?.backdrop || tmdb?.poster ? (
             <img
               src={tmdb.backdrop ?? tmdb.poster}
               alt={movie.title}
@@ -60,7 +70,19 @@ export default function MovieModal({ movie, onClose }) {
           ) : (
             <div className="w-full h-full bg-gray-800" />
           )}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #181818 0%, transparent 60%)' }} />
+          <div className="absolute inset-0 pointer-events-none" style={{ background: showTrailer ? 'none' : 'linear-gradient(to top, #181818 0%, transparent 60%)' }} />
+
+          {/* Trailer play button */}
+          {trailerKey && !showTrailer && (
+            <button
+              onClick={() => setShowTrailer(true)}
+              className="absolute bottom-14 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold transition hover:scale-105"
+              style={{ background: 'rgba(0,0,0,0.7)', border: '1px solid rgba(255,255,255,0.3)' }}
+            >▶ Watch Trailer</button>
+          )}
+          {showTrailer && (
+            <button onClick={() => setShowTrailer(false)} className="absolute top-3 left-3 text-white bg-black/60 rounded-full px-3 py-1 text-xs hover:bg-black/80 transition">✕ Close</button>
+          )}
           <button
             onClick={onClose}
             className="absolute top-3 right-3 text-white bg-black/50 rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-black/80 transition"

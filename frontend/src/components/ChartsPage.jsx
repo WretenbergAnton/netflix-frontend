@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useApolloClient } from '@apollo/client/react'
 import { gql } from '@apollo/client'
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js'
-import { Bar } from 'react-chartjs-2'
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, PointElement, LineElement, Filler, Title, Tooltip, Legend } from 'chart.js'
+import { Bar, Line } from 'react-chartjs-2'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, PointElement, LineElement, Filler, Title, Tooltip, Legend)
 
 const QUERY = gql`
   query Charts($limit: Int, $offset: Int) {
@@ -76,22 +76,27 @@ export default function ChartsPage() {
     }],
   }
 
-  // Movies per decade
-  const decadeCount = {}
+  // Movies per year (line)
+  const yearCount = {}
   movies.forEach((m) => {
-    if (!m.releaseYear) return
-    const decade = Math.floor(m.releaseYear / 10) * 10
-    decadeCount[decade] = (decadeCount[decade] ?? 0) + 1
+    if (!m.releaseYear || m.releaseYear < 1980 || m.releaseYear > 2024) return
+    yearCount[m.releaseYear] = (yearCount[m.releaseYear] ?? 0) + 1
   })
-  const decades = Object.entries(decadeCount).sort((a, b) => a[0] - b[0])
+  const years = Object.entries(yearCount).sort((a, b) => a[0] - b[0])
 
-  const decadeData = {
-    labels: decades.map(([d]) => `${d}s`),
+  const yearData = {
+    labels: years.map(([y]) => y),
     datasets: [{
-      data: decades.map(([, c]) => c),
-      backgroundColor: '#E50914',
-      borderRadius: 6,
-      borderSkipped: false,
+      label: 'Movies',
+      data: years.map(([, c]) => c),
+      borderColor: '#E50914',
+      backgroundColor: 'rgba(229,9,20,0.15)',
+      fill: true,
+      tension: 0.4,
+      pointRadius: 2,
+      pointHoverRadius: 5,
+      pointBackgroundColor: '#E50914',
+      borderWidth: 2,
     }],
   }
 
@@ -123,12 +128,22 @@ export default function ChartsPage() {
           </ChartCard>
         </div>
 
-        {/* Movies per decade */}
-        <ChartCard title="Movies per Decade">
-          <div style={{ height: 260 }}>
-            <Bar data={decadeData} options={{ ...baseOptions, maintainAspectRatio: false }} />
-          </div>
-        </ChartCard>
+        {/* Movies per year — full width line chart */}
+        <div className="col-span-2">
+          <ChartCard title="Movies Released per Year">
+            <div style={{ height: 280 }}>
+              <Line data={yearData} options={{
+                ...baseOptions,
+                maintainAspectRatio: false,
+                plugins: { ...baseOptions.plugins, legend: { display: false } },
+                scales: {
+                  x: { ticks: { color: '#888', maxTicksLimit: 15 }, grid: { color: '#242424' } },
+                  y: { ticks: { color: '#888' }, grid: { color: '#242424' }, beginAtZero: false },
+                },
+              }} />
+            </div>
+          </ChartCard>
+        </div>
 
         {/* Top 10 popular — horizontal */}
         <ChartCard title="Top 10 Most Popular">

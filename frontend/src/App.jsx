@@ -6,6 +6,7 @@ import HeroBanner from './components/HeroBanner.jsx'
 import MyListPage from './components/MyListPage.jsx'
 import ChartsPage from './components/ChartsPage.jsx'
 import GamePage from './components/GamePage.jsx'
+import TrendingPage from './components/TrendingPage.jsx'
 import { useFavoritesContext } from './context/FavoritesContext.jsx'
 
 const AUTH_SERVER = 'http://localhost:3001'
@@ -45,6 +46,7 @@ function AppContent({ user, logout }) {
 
         <div className="flex items-center gap-6 mr-8 flex-shrink-0">
           {navLink('Home', 'home')}
+          {navLink('Trending', 'trending')}
           {navLink('Stats', 'stats')}
           {navLink('Game', 'game')}
           <button
@@ -78,6 +80,7 @@ function AppContent({ user, logout }) {
       )}
 
       {page === 'mylist' && <MyListPage />}
+      {page === 'trending' && <TrendingPage />}
       {page === 'stats' && <ChartsPage />}
       {page === 'game' && <GamePage />}
     </div>

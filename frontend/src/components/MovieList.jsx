@@ -59,9 +59,11 @@ function GenreRows({ baseOffset }) {
           client.query({ query: MOVIES_QUERY, variables: { limit: 100, offset: baseOffset + i * 100 } }).catch(() => null)
         )
       )
+      const cjk = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/
       const all = pages
         .flatMap((r) => r?.data?.movies?.movies ?? [])
         .filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i)
+        .filter((m) => !cjk.test(m.title))
         .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
 
       const map = {}

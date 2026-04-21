@@ -74,12 +74,13 @@ export function useTMDB(title, year) {
     enqueue(() => tmdbSearch(title, year, controller.signal))
       .then((result) => {
         const entry = result ? {
+          tmdbId: result.id ?? null,
           poster: result.poster_path ? `https://image.tmdb.org/t/p/w300${result.poster_path}` : null,
           backdrop: result.backdrop_path ? `https://image.tmdb.org/t/p/w780${result.backdrop_path}` : null,
           rating: result.vote_average ?? null,
           voteCount: result.vote_count ?? null,
           overview: result.overview ?? null,
-        } : { poster: null, backdrop: null, rating: null, voteCount: null, overview: null }
+        } : { tmdbId: null, poster: null, backdrop: null, rating: null, voteCount: null, overview: null }
 
         cache.set(key, entry)
         setData(entry)
