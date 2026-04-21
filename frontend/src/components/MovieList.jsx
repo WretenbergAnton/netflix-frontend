@@ -52,9 +52,9 @@ function GenreRows({ baseOffset }) {
   useEffect(() => {
     setGenreMap({})
     async function load() {
-      // Fetch 5 pages of 100 starting from baseOffset
+      // Fetch 2 pages of 100 starting from baseOffset
       const pages = await Promise.all(
-        Array.from({ length: 5 }, (_, i) =>
+        Array.from({ length: 2 }, (_, i) =>
           client.query({ query: MOVIES_QUERY, variables: { limit: 100, offset: baseOffset + i * 100 } }).catch(() => null)
         )
       )

@@ -39,20 +39,19 @@ export default function ChartsPage() {
 
   useEffect(() => {
     async function loadAll() {
-      // First fetch to get totalCount
       const first = await client.query({ query: QUERY, variables: { limit: 1000, offset: 0 } })
       const total = first.data?.movies?.totalCount ?? 0
       const firstBatch = first.data?.movies?.movies ?? []
 
-      // Fetch remaining pages in parallel
-      const pages = Math.ceil(total / 1000)
+      const remaining = Math.ceil((total - 1000) / 1000)
       const rest = await Promise.all(
-        Array.from({ length: pages - 1 }, (_, i) =>
+        Array.from({ length: remaining }, (_, i) =>
           client.query({ query: QUERY, variables: { limit: 1000, offset: (i + 1) * 1000 } })
             .then((r) => r.data?.movies?.movies ?? [])
             .catch(() => [])
         )
       )
+
       setMovies([...firstBatch, ...rest.flat()])
     }
     loadAll()
