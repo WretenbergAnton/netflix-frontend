@@ -102,17 +102,19 @@ export default function PopularRow() {
 
   useEffect(() => {
     async function load() {
+      // Search for all titles in parallel
       const results = await Promise.all(
         POPULAR_TITLES.map((title) =>
           client.query({ query: SEARCH, variables: { title } }).catch(() => null)
         )
       )
-      const cjk = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/
+
+      // Combine all results, remove duplicates, sort by popularity
+      const seen = new Set()
       const all = results
         .flatMap((r) => r?.data?.searchMovies ?? [])
-        .filter((m) => !cjk.test(m.title))
+        .filter((m) => !seen.has(m.id) && seen.add(m.id))
         .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
-        .filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i)
 
       setMovies(all)
     }
