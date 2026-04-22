@@ -4,7 +4,6 @@ import { useApolloClient } from '@apollo/client/react'
 import { gql } from '@apollo/client'
 import MovieCard from './MovieCard.jsx'
 import PopularRow from './PopularRow.jsx'
-import RecommendationsRow from './RecommendationsRow.jsx'
 import AddMovieModal from './AddMovieModal.jsx'
 import { useFavoritesContext } from '../context/FavoritesContext.jsx'
 import { useCustomMovies } from '../context/CustomMoviesContext.jsx'
@@ -260,7 +259,6 @@ export default function MovieList() {
   return (
     <div>
       <PopularRow />
-      <RecommendationsRow />
 
       {customMovies.length > 0 && (
         <MovieRow title="My Movies" movies={customMovies} onRemove={removeMovie} />
