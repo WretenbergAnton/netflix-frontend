@@ -74,7 +74,12 @@ async function loginOrRegister(email, name) {
   return registerRes.data?.registerUser?.token
 }
 
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
+app.get('/ping', (req, res) => res.json({ ok: true, clientID: process.env.GOOGLE_CLIENT_ID?.slice(0, 8) }))
+
+app.get('/auth/google', (req, res, next) => {
+  console.log('→ /auth/google hit, clientID:', process.env.GOOGLE_CLIENT_ID?.slice(0, 8))
+  passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next)
+})
 
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: `${CLIENT_URL}?error=auth_failed` }),
@@ -99,5 +104,10 @@ if (existsSync(distPath)) {
   app.use(express.static(distPath))
   app.get('/{*splat}', (req, res) => res.sendFile(join(distPath, 'index.html')))
 }
+
+app.use((err, req, res, next) => {
+  console.error('Express error:', err.message)
+  res.status(500).json({ error: err.message })
+})
 
 app.listen(PORT, '0.0.0.0', () => console.log(`Auth server running on port ${PORT}`))
