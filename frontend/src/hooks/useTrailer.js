@@ -1,21 +1,24 @@
 import { useState, useEffect } from 'react'
 
-const cache = new Map()
 const TOKEN = import.meta.env.VITE_TMDB_TOKEN
 
+// Remember results so we don't fetch the same trailer twice
+const cache = new Map()
+
+// Given a TMDB movie ID, returns a YouTube video key (or null if no trailer found)
 export function useTrailer(tmdbId) {
   const [videoKey, setVideoKey] = useState(cache.get(tmdbId) ?? null)
 
   useEffect(() => {
+    // Skip if we have no ID or already fetched it
     if (!tmdbId || cache.has(tmdbId)) return
-    const controller = new AbortController()
 
     fetch(`https://api.themoviedb.org/3/movie/${tmdbId}/videos`, {
       headers: { Authorization: `Bearer ${TOKEN}` },
-      signal: controller.signal,
     })
       .then((r) => r.json())
       .then((json) => {
+        // Find the first YouTube trailer or teaser
         const trailer = json.results?.find(
           (v) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser')
         )
@@ -24,8 +27,6 @@ export function useTrailer(tmdbId) {
         setVideoKey(key)
       })
       .catch(() => cache.set(tmdbId, null))
-
-    return () => controller.abort()
   }, [tmdbId])
 
   return videoKey

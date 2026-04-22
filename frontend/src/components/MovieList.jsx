@@ -258,9 +258,9 @@ export default function MovieList() {
 
   return (
     <div>
-      <PopularRow />
+      {!filters.genre && <PopularRow />}
 
-      {customMovies.length > 0 && (
+      {customMovies.length > 0 && !filters.genre && (
         <MovieRow title="My Movies" movies={customMovies} onRemove={removeMovie} />
       )}
 
