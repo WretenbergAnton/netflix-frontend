@@ -76,11 +76,13 @@ function GenreRows({ baseOffset, filters }) {
         )
       )
 
-      // Merge both pages into one list and remove duplicates
+      // Merge both pages into one list, remove duplicates and Asian-title movies
+      const cjk = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/
       const seen = new Set()
       const movies = pages
         .flatMap((r) => r?.data?.movies?.movies ?? [])
         .filter((m) => !seen.has(m.id) && seen.add(m.id))
+        .filter((m) => !cjk.test(m.title))
         .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
 
       setGenreMap(groupByGenre(movies))
