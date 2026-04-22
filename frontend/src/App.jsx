@@ -9,7 +9,7 @@ import GamePage from './components/GamePage.jsx'
 import TrendingPage from './components/TrendingPage.jsx'
 import { useFavoritesContext } from './context/FavoritesContext.jsx'
 
-const AUTH_SERVER = 'http://localhost:3001'
+const AUTH_SERVER = import.meta.env.VITE_AUTH_SERVER_URL ?? 'http://localhost:3001'
 
 function AppContent({ user, logout }) {
   const [page, setPage] = useState('home')
