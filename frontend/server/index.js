@@ -96,7 +96,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const distPath = join(__dirname, '../dist')
 if (existsSync(distPath)) {
   app.use(express.static(distPath))
-  app.get('*', (req, res) => res.sendFile(join(distPath, 'index.html')))
+  app.get('/{*splat}', (req, res) => res.sendFile(join(distPath, 'index.html')))
 }
 
 app.listen(PORT, () => console.log(`Auth server running on http://localhost:${PORT}`))
