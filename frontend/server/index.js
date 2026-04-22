@@ -1,26 +1,19 @@
 import express from 'express'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import { existsSync } from 'fs'
 import session from 'express-session'
 import passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import cors from 'cors'
 
 const app = express()
-const PORT = process.env.PORT || process.env.SERVER_PORT || 3001
+const PORT = process.env.PORT || 3001
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
-console.log('CLIENT_URL =', CLIENT_URL)
-console.log('NODE_ENV =', process.env.NODE_ENV)
 const GRAPHQL_URL = process.env.VITE_GRAPHQL_URL || 'https://netflix-graphql-api-production.up.railway.app/graphql'
 
 app.use(cors({ origin: CLIENT_URL, credentials: true }))
 app.use(express.json())
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'dev-secret',
-  resave: false,
-  saveUninitialized: false,
-}))
+app.use(session({ secret: process.env.SESSION_SECRET || 'dev-secret', resave: false, saveUninitialized: false }))
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -31,13 +24,12 @@ passport.use(new GoogleStrategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3001/auth/google/callback',
+    callbackURL: process.env.GOOGLE_CALLBACK_URL,
   },
   async (accessToken, refreshToken, profile, done) => {
     const email = profile.emails[0].value
     const name = profile.displayName
     const picture = profile.photos?.[0]?.value ?? null
-
     const jwt = await loginOrRegister(email, name)
     done(null, { email, name, picture, jwt })
   }
@@ -53,61 +45,32 @@ async function graphql(query, variables = {}) {
 }
 
 async function loginOrRegister(email, name) {
-  const loginRes = await graphql(
-    `mutation Login($email: String!, $password: String!) {
-      loginUser(email: $email, password: $password) { token }
-    }`,
-    { email, password: process.env.OAUTH_USER_PASSWORD }
+  const password = process.env.OAUTH_USER_PASSWORD
+  const login = await graphql(
+    `mutation Login($email: String!, $password: String!) { loginUser(email: $email, password: $password) { token } }`,
+    { email, password }
   )
+  if (login.data?.loginUser?.token) return login.data.loginUser.token
 
-  if (loginRes.data?.loginUser?.token) {
-    return loginRes.data.loginUser.token
-  }
-
-  const registerRes = await graphql(
-    `mutation Register($email: String!, $password: String!, $name: String) {
-      registerUser(email: $email, password: $password, name: $name) { token }
-    }`,
-    { email, password: process.env.OAUTH_USER_PASSWORD, name }
+  const register = await graphql(
+    `mutation Register($email: String!, $password: String!, $name: String) { registerUser(email: $email, password: $password, name: $name) { token } }`,
+    { email, password, name }
   )
-
-  return registerRes.data?.registerUser?.token
+  return register.data?.registerUser?.token
 }
 
-app.get('/ping', (req, res) => res.json({ ok: true, clientID: process.env.GOOGLE_CLIENT_ID?.slice(0, 8) }))
-
-app.get('/auth/google', (req, res, next) => {
-  console.log('→ /auth/google hit, clientID:', process.env.GOOGLE_CLIENT_ID?.slice(0, 8))
-  passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next)
-})
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
 
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: `${CLIENT_URL}?error=auth_failed` }),
   (req, res) => {
     const { jwt, name, picture } = req.user
-    const params = new URLSearchParams({ token: jwt, name, picture: picture ?? '' })
-    res.redirect(`${CLIENT_URL}?${params}`)
+    res.redirect(`${CLIENT_URL}?${new URLSearchParams({ token: jwt, name, picture: picture ?? '' })}`)
   }
 )
 
+const distPath = join(dirname(fileURLToPath(import.meta.url)), '../dist')
+app.use(express.static(distPath))
+app.get('/{*splat}', (req, res) => res.sendFile(join(distPath, 'index.html')))
 
-app.get('/auth/logout', (req, res) => {
-  req.logout(() => {
-    res.json({ ok: true })
-  })
-})
-
-// Serve Vite build in production
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const distPath = join(__dirname, '../dist')
-if (existsSync(distPath)) {
-  app.use(express.static(distPath))
-  app.get('/{*splat}', (req, res) => res.sendFile(join(distPath, 'index.html')))
-}
-
-app.use((err, req, res, next) => {
-  console.error('Express error:', err.message)
-  res.status(500).json({ error: err.message })
-})
-
-app.listen(PORT, '0.0.0.0', () => console.log(`Auth server running on port ${PORT}`))
+app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`))

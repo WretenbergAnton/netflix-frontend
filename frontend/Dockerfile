@@ -15,5 +15,4 @@ ENV VITE_TMDB_TOKEN=$VITE_TMDB_TOKEN
 
 RUN npm run build
 
-EXPOSE 8080
 CMD ["node", "server/index.js"]
