@@ -99,4 +99,4 @@ if (existsSync(distPath)) {
   app.get('/{*splat}', (req, res) => res.sendFile(join(distPath, 'index.html')))
 }
 
-app.listen(PORT, () => console.log(`Auth server running on http://localhost:${PORT}`))
+app.listen(PORT, '0.0.0.0', () => console.log(`Auth server running on port ${PORT}`))
