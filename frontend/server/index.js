@@ -11,6 +11,8 @@ import cors from 'cors'
 const app = express()
 const PORT = process.env.PORT || process.env.SERVER_PORT || 3001
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
+console.log('CLIENT_URL =', CLIENT_URL)
+console.log('NODE_ENV =', process.env.NODE_ENV)
 const GRAPHQL_URL = process.env.VITE_GRAPHQL_URL || 'https://netflix-graphql-api-production.up.railway.app/graphql'
 
 app.use(cors({ origin: CLIENT_URL, credentials: true }))
