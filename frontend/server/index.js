@@ -1,12 +1,15 @@
 import 'dotenv/config'
 import express from 'express'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+import { existsSync } from 'fs'
 import session from 'express-session'
 import passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import cors from 'cors'
 
 const app = express()
-const PORT = process.env.SERVER_PORT || 3001
+const PORT = process.env.PORT || process.env.SERVER_PORT || 3001
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
 const GRAPHQL_URL = process.env.VITE_GRAPHQL_URL || 'https://netflix-graphql-api-production.up.railway.app/graphql'
 
@@ -87,5 +90,13 @@ app.get('/auth/logout', (req, res) => {
     res.json({ ok: true })
   })
 })
+
+// Serve Vite build in production
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const distPath = join(__dirname, '../dist')
+if (existsSync(distPath)) {
+  app.use(express.static(distPath))
+  app.get('*', (req, res) => res.sendFile(join(distPath, 'index.html')))
+}
 
 app.listen(PORT, () => console.log(`Auth server running on http://localhost:${PORT}`))
