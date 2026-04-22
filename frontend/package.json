@@ -7,8 +7,8 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "dev": "concurrently \"vite\" \"node server/index.js\"",
-    "server": "node server/index.js",
+    "dev": "concurrently \"vite\" \"node --env-file=.env server/index.js\"",
+    "server": "node --env-file=.env server/index.js",
     "build": "vite build",
     "start": "node server/index.js",
     "lint": "eslint .",
