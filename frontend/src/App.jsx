@@ -15,6 +15,7 @@ function AppContent({ user, logout }) {
   const [page, setPage] = useState('home')
   const [homeGenre, setHomeGenre] = useState('')
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const { favorites } = useFavoritesContext()
 
   useEffect(() => {
@@ -23,9 +24,15 @@ function AppContent({ user, logout }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Navigate to a page and close the mobile menu
+  function go(target) {
+    setPage(target)
+    setMenuOpen(false)
+  }
+
   const navLink = (label, target) => (
     <button
-      onClick={() => setPage(target)}
+      onClick={() => go(target)}
       className="text-sm font-medium transition"
       style={{ color: page === target ? 'white' : '#b3b3b3' }}
     >
@@ -36,46 +43,80 @@ function AppContent({ user, logout }) {
   return (
     <div className="min-h-screen text-white" style={{ background: '#141414' }}>
       <nav
-        className="fixed top-0 left-0 right-0 z-40 flex flex-wrap items-center px-4 sm:px-12 py-3 gap-y-2 transition-all duration-300"
-        style={{ background: scrolled || page !== 'home' ? 'rgba(20,20,20,0.97)' : 'linear-gradient(to bottom, rgba(0,0,0,0.7), transparent)' }}
+        className="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
+        style={{ background: scrolled || page !== 'home' || menuOpen ? 'rgba(20,20,20,0.97)' : 'linear-gradient(to bottom, rgba(0,0,0,0.7), transparent)' }}
       >
-        {/* Top row: logo + profile */}
-        <button
-          onClick={() => setPage('home')}
-          className="text-2xl font-black tracking-tight flex-shrink-0"
-          style={{ color: '#E50914' }}
-        >NETFLIX</button>
-
-        <div className="flex-1 sm:hidden" />
-        <div className="flex-shrink-0 sm:hidden">
-          <ProfileMenu user={user} onLogout={logout} />
-        </div>
-
-        {/* Nav links — second row on mobile, inline on desktop */}
-        <div className="flex items-center gap-4 sm:gap-6 sm:ml-8 w-full sm:w-auto order-last sm:order-none flex-shrink-0">
-          {navLink('Home', 'home')}
-          {navLink('Stats', 'stats')}
-          {navLink('Game', 'game')}
+        {/* Main nav row */}
+        <div className="flex items-center px-4 sm:px-12 py-3 gap-4">
           <button
-            onClick={() => setPage('mylist')}
-            className="text-sm font-medium transition flex items-center gap-1"
-            style={{ color: page === 'mylist' ? 'white' : '#b3b3b3' }}
-          >
-            My List {favorites.length > 0 && (
-              <span className="text-xs rounded-full px-1.5 py-0.5 font-bold" style={{ background: '#E50914', color: 'white' }}>
-                {favorites.length}
-              </span>
-            )}
-          </button>
+            onClick={() => go('home')}
+            className="text-2xl font-black tracking-tight flex-shrink-0"
+            style={{ color: '#E50914' }}
+          >NETFLIX</button>
+
+          {/* Desktop nav links */}
+          <div className="hidden sm:flex items-center gap-6 flex-shrink-0">
+            {navLink('Home', 'home')}
+            {navLink('Stats', 'stats')}
+            {navLink('Game', 'game')}
+            <button
+              onClick={() => go('mylist')}
+              className="text-sm font-medium transition flex items-center gap-1"
+              style={{ color: page === 'mylist' ? 'white' : '#b3b3b3' }}
+            >
+              My List {favorites.length > 0 && (
+                <span className="text-xs rounded-full px-1.5 py-0.5 font-bold" style={{ background: '#E50914', color: 'white' }}>
+                  {favorites.length}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* Desktop search */}
+          <div className="hidden sm:flex flex-1 justify-center mx-4">
+            <SearchBar />
+          </div>
+
+          {/* Desktop profile */}
+          <div className="hidden sm:block flex-shrink-0">
+            <ProfileMenu user={user} onLogout={logout} />
+          </div>
+
+          {/* Mobile: profile + hamburger */}
+          <div className="flex sm:hidden items-center gap-3 ml-auto">
+            <ProfileMenu user={user} onLogout={logout} />
+            <button
+              onClick={() => setMenuOpen((o) => !o)}
+              className="flex flex-col justify-center gap-1.5 w-8 h-8 flex-shrink-0"
+              aria-label="Menu"
+            >
+              <span className="block h-0.5 w-6 rounded transition-all duration-200" style={{ background: 'white', transform: menuOpen ? 'rotate(45deg) translate(4px, 4px)' : 'none' }} />
+              <span className="block h-0.5 w-6 rounded transition-all duration-200" style={{ background: 'white', opacity: menuOpen ? 0 : 1 }} />
+              <span className="block h-0.5 w-6 rounded transition-all duration-200" style={{ background: 'white', transform: menuOpen ? 'rotate(-45deg) translate(4px, -4px)' : 'none' }} />
+            </button>
+          </div>
         </div>
 
-        {/* Search + profile — desktop only */}
-        <div className="hidden sm:flex flex-1 justify-center mx-4">
-          <SearchBar />
-        </div>
-        <div className="hidden sm:block flex-shrink-0">
-          <ProfileMenu user={user} onLogout={logout} />
-        </div>
+        {/* Mobile dropdown menu */}
+        {menuOpen && (
+          <div className="sm:hidden px-4 pb-4 flex flex-col gap-4" style={{ borderTop: '1px solid #2a2a2a' }}>
+            {navLink('Home', 'home')}
+            {navLink('Stats', 'stats')}
+            {navLink('Game', 'game')}
+            <button
+              onClick={() => go('mylist')}
+              className="text-sm font-medium transition flex items-center gap-1 text-left"
+              style={{ color: page === 'mylist' ? 'white' : '#b3b3b3' }}
+            >
+              My List {favorites.length > 0 && (
+                <span className="text-xs rounded-full px-1.5 py-0.5 font-bold" style={{ background: '#E50914', color: 'white' }}>
+                  {favorites.length}
+                </span>
+              )}
+            </button>
+            <SearchBar />
+          </div>
+        )}
       </nav>
 
       {page === 'home' && (

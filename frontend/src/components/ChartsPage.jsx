@@ -113,7 +113,7 @@ export default function ChartsPage({ onGenreClick }) {
   }
 
   return (
-    <div className="px-4 sm:px-12 pb-16 pt-32">
+    <div className="px-4 sm:px-12 pb-16 pt-20 sm:pt-32">
       <h2 className="text-white text-2xl font-bold mb-2">Statistics</h2>
       <p className="text-gray-500 text-sm mb-10">Based on {movies.length} movies</p>
 

@@ -20,8 +20,8 @@ export default function MovieCard({ movie }) {
         onClick={() => setOpen(true)}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="relative flex-shrink-0 rounded-md cursor-pointer transition-transform duration-200 overflow-hidden"
-        style={{ width: 200, height: 300, transform: hovered ? 'scale(1.06)' : 'scale(1)', zIndex: hovered ? 10 : 1 }}
+        className="relative flex-shrink-0 rounded-md cursor-pointer transition-transform duration-200 overflow-hidden w-[120px] h-[180px] sm:w-[200px] sm:h-[300px]"
+        style={{ transform: hovered ? 'scale(1.06)' : 'scale(1)', zIndex: hovered ? 10 : 1 }}
       >
         {tmdb?.poster ? (
           <img src={tmdb.poster} alt={movie.title} className="w-full h-full object-cover" loading="lazy" />
