@@ -6,6 +6,7 @@ import HeroBanner from './components/HeroBanner.jsx'
 import MyListPage from './components/MyListPage.jsx'
 import ChartsPage from './components/ChartsPage.jsx'
 import GamePage from './components/GamePage.jsx'
+import SettingsPage from './components/SettingsPage.jsx'
 import { useFavoritesContext } from './context/FavoritesContext.jsx'
 
 const AUTH_SERVER = import.meta.env.VITE_AUTH_SERVER_URL ?? 'http://localhost:3001'
@@ -83,10 +84,9 @@ function AppContent({ user, logout }) {
             <ProfileMenu user={user} onLogout={logout} />
           </div>
 
-          {/* Mobile: search icon + profile + hamburger */}
+          {/* Mobile: search + hamburger only (profile is in Settings) */}
           <div className="flex sm:hidden items-center gap-3 ml-auto">
             <button onClick={() => { setSearchOpen(true); setMenuOpen(false) }} className="text-sm font-medium" style={{ color: '#b3b3b3' }}>Search</button>
-            <ProfileMenu user={user} onLogout={logout} />
             <button
               onClick={() => setMenuOpen((o) => !o)}
               className="flex flex-col justify-center gap-1.5 w-8 h-8 flex-shrink-0"
@@ -116,6 +116,7 @@ function AppContent({ user, logout }) {
           { label: 'Stats', target: 'stats' },
           { label: 'Game', target: 'game' },
           { label: 'My List', target: 'mylist' },
+          { label: 'Settings', target: 'settings' },
         ].map(({ label, target }) => (
           <button
             key={target}
@@ -150,6 +151,7 @@ function AppContent({ user, logout }) {
         <ChartsPage onGenreClick={(genre) => { setHomeGenre(genre); setPage('home') }} />
       )}
       {page === 'game' && <GamePage />}
+      {page === 'settings' && <SettingsPage user={user} onLogout={logout} />}
     </div>
   )
 }
