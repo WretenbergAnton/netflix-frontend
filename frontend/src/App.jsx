@@ -36,16 +36,23 @@ function AppContent({ user, logout }) {
   return (
     <div className="min-h-screen text-white" style={{ background: '#141414' }}>
       <nav
-        className="fixed top-0 left-0 right-0 z-40 flex items-center px-12 py-4 transition-all duration-300"
+        className="fixed top-0 left-0 right-0 z-40 flex flex-wrap items-center px-4 sm:px-12 py-3 gap-y-2 transition-all duration-300"
         style={{ background: scrolled || page !== 'home' ? 'rgba(20,20,20,0.97)' : 'linear-gradient(to bottom, rgba(0,0,0,0.7), transparent)' }}
       >
+        {/* Top row: logo + profile */}
         <button
           onClick={() => setPage('home')}
-          className="text-2xl font-black tracking-tight mr-8 flex-shrink-0"
+          className="text-2xl font-black tracking-tight flex-shrink-0"
           style={{ color: '#E50914' }}
         >NETFLIX</button>
 
-        <div className="flex items-center gap-6 mr-8 flex-shrink-0">
+        <div className="flex-1 sm:hidden" />
+        <div className="flex-shrink-0 sm:hidden">
+          <ProfileMenu user={user} onLogout={logout} />
+        </div>
+
+        {/* Nav links — second row on mobile, inline on desktop */}
+        <div className="flex items-center gap-4 sm:gap-6 sm:ml-8 w-full sm:w-auto order-last sm:order-none flex-shrink-0">
           {navLink('Home', 'home')}
           {navLink('Stats', 'stats')}
           {navLink('Game', 'game')}
@@ -62,10 +69,11 @@ function AppContent({ user, logout }) {
           </button>
         </div>
 
-        <div className="flex-1 flex justify-center">
+        {/* Search + profile — desktop only */}
+        <div className="hidden sm:flex flex-1 justify-center mx-4">
           <SearchBar />
         </div>
-        <div className="flex-shrink-0 ml-8">
+        <div className="hidden sm:block flex-shrink-0">
           <ProfileMenu user={user} onLogout={logout} />
         </div>
       </nav>
@@ -73,7 +81,7 @@ function AppContent({ user, logout }) {
       {page === 'home' && (
         <>
           <HeroBanner />
-          <div className="px-12 pb-12 -mt-4">
+          <div className="px-4 sm:px-12 pb-12 -mt-4">
             <MovieList initialGenre={homeGenre} onGenreUsed={() => setHomeGenre('')} />
           </div>
         </>

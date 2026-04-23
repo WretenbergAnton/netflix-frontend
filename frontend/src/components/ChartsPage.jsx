@@ -113,11 +113,11 @@ export default function ChartsPage({ onGenreClick }) {
   }
 
   return (
-    <div className="px-12 pb-16 pt-32">
+    <div className="px-4 sm:px-12 pb-16 pt-32">
       <h2 className="text-white text-2xl font-bold mb-2">Statistics</h2>
       <p className="text-gray-500 text-sm mb-10">Based on {movies.length} movies</p>
 
-      <div className="grid grid-cols-2 gap-6" style={{ maxWidth: 1100 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6" style={{ maxWidth: 1100 }}>
         {/* Top genres — full width */}
         <div className="col-span-2">
           <ChartCard title="Top 10 Genres — click a bar to browse that genre">

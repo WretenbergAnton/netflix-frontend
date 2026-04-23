@@ -17,10 +17,7 @@ function HeroContent({ movie, onInfo }) {
   const tmdb = useTMDB(movie.title, movie.releaseYear)
 
   return (
-    <div
-      className="relative w-full overflow-hidden"
-      style={{ height: 520 }}
-    >
+    <div className="relative w-full overflow-hidden" style={{ height: 'clamp(320px, 50vw, 520px)' }}>
       {/* Backdrop */}
       {tmdb?.backdrop ? (
         <img src={tmdb.backdrop} alt={movie.title} className="absolute inset-0 w-full h-full object-cover" />
@@ -33,8 +30,8 @@ function HeroContent({ movie, onInfo }) {
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #141414 0%, transparent 40%)' }} />
 
       {/* Text content */}
-      <div className="absolute bottom-16 left-12 max-w-lg">
-        <h2 className="text-5xl font-black text-white mb-3 leading-tight">{movie.title}</h2>
+      <div className="absolute bottom-8 sm:bottom-16 left-4 sm:left-12 max-w-xs sm:max-w-lg">
+        <h2 className="text-3xl sm:text-5xl font-black text-white mb-3 leading-tight">{movie.title}</h2>
         <div className="flex items-center gap-3 mb-4">
           {tmdb?.rating && (
             <span className="text-green-400 font-bold text-sm">{Math.round(tmdb.rating * 10)}% Match</span>

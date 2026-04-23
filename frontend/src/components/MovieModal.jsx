@@ -49,7 +49,7 @@ export default function MovieModal({ movie, onClose }) {
       onClick={onClose}
     >
       <div
-        className="relative rounded-lg overflow-hidden w-full max-w-2xl"
+        className="relative rounded-none sm:rounded-lg overflow-hidden w-full sm:max-w-2xl max-h-screen overflow-y-auto"
         style={{ background: '#181818' }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -92,7 +92,7 @@ export default function MovieModal({ movie, onClose }) {
         </div>
 
         {/* Info */}
-        <div className="px-8 pb-8 -mt-10 relative">
+        <div className="px-4 sm:px-8 pb-8 -mt-10 relative">
           <h2 className="text-white text-2xl font-bold mb-2">{movie.title}</h2>
 
           <div className="flex items-center gap-4 mb-4">
