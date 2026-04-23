@@ -95,6 +95,7 @@ const POPULAR_TITLES = [
   'Doctor Strange in the Multiverse of Madness',
 ];
 
+// Horizontally scrollable row of hand-picked popular movies fetched by title from the API
 export default function PopularRow() {
   const client = useApolloClient()
   const [movies, setMovies] = useState([])

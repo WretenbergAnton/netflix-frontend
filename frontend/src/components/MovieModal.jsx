@@ -4,6 +4,7 @@ import { useTrailer } from '../hooks/useTrailer.js'
 import { useActorImage } from '../hooks/useActorImage.js'
 import { useFavoritesContext } from '../context/FavoritesContext.jsx'
 
+// Circular actor card with a TMDB profile photo and a link to their IMDB page
 function ActorCard({ actor }) {
   const data = useActorImage(actor.name)
   return (
@@ -27,6 +28,7 @@ function ActorCard({ actor }) {
   )
 }
 
+// Full-screen modal showing backdrop, trailer, overview, cast, and save/watch buttons for a movie
 export default function MovieModal({ movie, onClose }) {
   const tmdb = useTMDB(movie.title, movie.releaseYear)
   const trailerKey = useTrailer(tmdb?.tmdbId)

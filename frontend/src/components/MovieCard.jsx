@@ -5,6 +5,7 @@ import MovieModal from './MovieModal.jsx'
 
 const COLORS = ['#1a1a2e', '#16213e', '#0f3460', '#1b1b2f', '#192a56', '#2c3e50', '#1a0a2e', '#0d1b2a']
 
+// A poster card that scales on hover, shows details and a save button, and opens the movie modal on click
 export default function MovieCard({ movie }) {
   const [hovered, setHovered] = useState(false)
   const [open, setOpen] = useState(false)

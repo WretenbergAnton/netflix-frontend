@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
 
+// Dropdown profile menu showing the user's avatar and a sign-out button
 export default function ProfileMenu({ user, onLogout }) {
   const [open, setOpen] = useState(false)
   const ref = useRef()
 
   useEffect(() => {
+    // Close the menu when the user clicks outside of it
     function handleClick(e) {
       if (!ref.current?.contains(e.target)) setOpen(false)
     }

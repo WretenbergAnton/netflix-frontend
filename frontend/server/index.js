@@ -35,6 +35,7 @@ passport.use(new GoogleStrategy(
   }
 ))
 
+// Send a GraphQL request to the API and return the parsed JSON response
 async function graphql(query, variables = {}) {
   const res = await fetch(GRAPHQL_URL, {
     method: 'POST',
@@ -44,6 +45,7 @@ async function graphql(query, variables = {}) {
   return res.json()
 }
 
+// Try to log in the user — if no account exists yet, register one and return the JWT
 async function loginOrRegister(email, name) {
   const password = process.env.OAUTH_USER_PASSWORD
   const login = await graphql(

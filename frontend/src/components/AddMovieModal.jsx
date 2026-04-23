@@ -6,6 +6,7 @@ const GENRE_OPTIONS = [
   'Mystery', 'Romance', 'Science Fiction', 'Thriller', 'Western',
 ]
 
+// Modal form that lets the user add a custom movie with title, year, rating, and genres
 export default function AddMovieModal({ onClose, onAdd }) {
   const [title, setTitle] = useState('')
   const [year, setYear] = useState('')
@@ -19,10 +20,12 @@ export default function AddMovieModal({ onClose, onAdd }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
+  // Add a genre to the selection, or remove it if already selected
   function toggleGenre(g) {
     setGenres((gs) => gs.includes(g) ? gs.filter((x) => x !== g) : [...gs, g])
   }
 
+  // Validate the form, build a movie object, and pass it to the parent
   function handleSubmit(e) {
     e.preventDefault()
     if (!title.trim()) { setError('Title is required'); return }

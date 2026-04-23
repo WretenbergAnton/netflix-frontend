@@ -1,6 +1,7 @@
 import { useFavoritesContext } from '../context/FavoritesContext.jsx'
 import MovieCard from './MovieCard.jsx'
 
+// Page that displays all movies the user has saved to their list
 export default function MyListPage() {
   const { favorites } = useFavoritesContext()
 

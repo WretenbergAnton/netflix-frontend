@@ -12,6 +12,7 @@ const FEATURED = [
 
 const PICK = FEATURED[Math.floor(Math.random() * FEATURED.length)]
 
+// Renders the full-width backdrop image, title, overview, and action buttons for a featured movie
 function HeroContent({ movie, onInfo }) {
   const tmdb = useTMDB(movie.title, movie.releaseYear)
 
@@ -64,6 +65,7 @@ function HeroContent({ movie, onInfo }) {
   )
 }
 
+// Picks a random featured movie on mount and shows it as the hero banner at the top of the home page
 export default function HeroBanner() {
   const [modalMovie, setModalMovie] = useState(null)
 

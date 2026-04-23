@@ -6,8 +6,9 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   globalIgnores(['dist']),
+  // Frontend source files — browser globals
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['src/**/*.{js,jsx}'],
     extends: [
       js.configs.recommended,
       reactHooks.configs.flat.recommended,
@@ -24,6 +25,19 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // setState at the start of an effect to reset state is a valid pattern
+      'react-hooks/set-state-in-effect': 'off',
+      // Context files intentionally export both a Provider component and a hook
+      'react-refresh/only-export-components': 'warn',
+    },
+  },
+  // Server — Node.js globals (process, etc.)
+  {
+    files: ['server/**/*.js'],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      globals: globals.node,
+      sourceType: 'module',
     },
   },
 ])

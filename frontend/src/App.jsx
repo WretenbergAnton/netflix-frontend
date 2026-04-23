@@ -10,6 +10,7 @@ import { useFavoritesContext } from './context/FavoritesContext.jsx'
 
 const AUTH_SERVER = import.meta.env.VITE_AUTH_SERVER_URL ?? 'http://localhost:3001'
 
+// Main layout with nav bar and page routing once the user is logged in
 function AppContent({ user, logout }) {
   const [page, setPage] = useState('home')
   const [homeGenre, setHomeGenre] = useState('')
@@ -87,6 +88,7 @@ function AppContent({ user, logout }) {
   )
 }
 
+// Root component — shows the login screen if no JWT is stored, otherwise renders the app
 function App() {
   const [token, setToken] = useState(() => localStorage.getItem('jwt'))
   const [user, setUser] = useState(() => {
@@ -110,6 +112,7 @@ function App() {
     }
   }, [])
 
+  // Clear all stored auth data and return to the login screen
   function logout() {
     localStorage.removeItem('jwt')
     localStorage.removeItem('user_name')

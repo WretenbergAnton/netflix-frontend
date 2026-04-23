@@ -208,7 +208,7 @@ export default function MovieList({ initialGenre = '', onGenreUsed }) {
       setFilters((f) => ({ ...f, genre: initialGenre }))
       onGenreUsed?.()
     }
-  }, [initialGenre])
+  }, [initialGenre, onGenreUsed])
   const [showAddModal, setShowAddModal] = useState(false)
   const { data } = useQuery(MOVIES_QUERY, { variables: { limit: 1, offset } })
   const { customMovies, addMovie, removeMovie } = useCustomMovies()
