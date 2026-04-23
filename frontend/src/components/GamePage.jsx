@@ -78,6 +78,7 @@ export default function GamePage() {
   const [best, setBest] = useState(() => Number(localStorage.getItem('actor_best') ?? 0))
   const [search, setSearch] = useState('')
   const [started, setStarted] = useState(false)
+  const [error, setError] = useState(null)
 
   // Load movies and build an actor → movies map
   useEffect(() => {
@@ -86,7 +87,7 @@ export default function GamePage() {
       const pages = await Promise.all(
         [0, 1, 2].map((i) =>
           client.query({ query: QUERY, variables: { limit: 1000, offset: i * 1000 } })
-            .then((r) => r.data?.movies?.movies ?? []).catch(() => [])
+            .then((r) => r.data?.movies?.movies ?? [])
         )
       )
 
@@ -102,7 +103,7 @@ export default function GamePage() {
       })
       setActorMap(map)
     }
-    load()
+    load().catch(() => setError('Could not load game data. Please try again.'))
   }, [client])
 
   // Actors that appear in at least 1 movie
@@ -176,6 +177,12 @@ export default function GamePage() {
     if (option.isCorrect) return 'missed'
     return 'default'
   }
+
+  if (error) return (
+    <div className="flex items-center justify-center" style={{ minHeight: '100vh', background: '#141414' }}>
+      <p className="text-red-400 text-sm">{error}</p>
+    </div>
+  )
 
   if (movies.length === 0) return (
     <div className="flex items-center justify-center" style={{ minHeight: '100vh', background: '#141414' }}>

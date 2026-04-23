@@ -36,6 +36,7 @@ function ChartCard({ title, children }) {
 export default function ChartsPage({ onGenreClick }) {
   const client = useApolloClient()
   const [movies, setMovies] = useState([])
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     // Fetch 3 pages of 1000 = 3000 movies, enough for representative statistics
@@ -44,13 +45,16 @@ export default function ChartsPage({ onGenreClick }) {
         [0, 1, 2].map((i) =>
           client.query({ query: QUERY, variables: { limit: 1000, offset: i * 1000 } })
             .then((r) => r.data?.movies?.movies ?? [])
-            .catch(() => [])
         )
       )
       setMovies(pages.flat())
     }
-    load()
+    load().catch(() => setError('Could not load statistics. Please try again.'))
   }, [client])
+
+  if (error) return (
+    <div className="px-12 pt-32 text-red-400 text-sm">{error}</div>
+  )
 
   if (movies.length === 0) return (
     <div className="px-12 pt-32 text-gray-500 text-sm">Loading stats...</div>

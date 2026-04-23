@@ -32,13 +32,17 @@ export default function SearchBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Run a search when the user types at least 2 characters
+  // Run a search 300 ms after the user stops typing (debounce)
+  const debounceRef = useRef(null)
   function handleChange(e) {
     const val = e.target.value
     setQuery(val)
+    clearTimeout(debounceRef.current)
     if (val.trim().length >= 2) {
-      search({ variables: { title: val.trim() } })
-      setOpen(true)
+      debounceRef.current = setTimeout(() => {
+        search({ variables: { title: val.trim() } })
+        setOpen(true)
+      }, 300)
     } else {
       setOpen(false)
     }
