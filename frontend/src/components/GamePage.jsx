@@ -35,8 +35,8 @@ function MovieOption({ movie, state, onClick }) {
   return (
     <div
       onClick={onClick}
-      className="relative rounded-xl overflow-hidden cursor-pointer transition-transform hover:scale-105"
-      style={{ width: 160, height: 240, border, flexShrink: 0 }}
+      className="relative rounded-xl overflow-hidden cursor-pointer transition-transform hover:scale-105 w-[130px] h-[195px] sm:w-[160px] sm:h-[240px]"
+      style={{ border, flexShrink: 0 }}
     >
       {tmdb?.poster
         ? <img src={tmdb.poster} alt={movie.title} className="w-full h-full object-cover" loading="lazy" />
@@ -203,7 +203,7 @@ export default function GamePage() {
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search actor..."
           className="w-full px-4 py-3 rounded-xl text-white text-sm outline-none"
-          style={{ background: '#2a2a2a', border: `1px solid ${search ? '#E50914' : '#444'}` }}
+          style={{ background: '#2a2a2a', border: `1px solid ${search ? '#E50914' : '#444'}`, fontSize: 16 }}
         />
         {suggestions.length > 0 && (
           <div className="absolute left-0 right-0 top-full mt-2 rounded-xl overflow-hidden z-10"
@@ -229,13 +229,13 @@ export default function GamePage() {
   const allRight = revealed && [...selected].every((id) => correctIds.has(id)) && [...correctIds].every((id) => selected.has(id))
 
   return (
-    <div className="flex flex-col items-center gap-8 px-4 pb-16" style={{ minHeight: '100vh', background: '#141414', paddingTop: 100 }}>
+    <div className="flex flex-col items-center gap-6 sm:gap-8 px-4 pb-16 pt-24 sm:pt-28" style={{ minHeight: '100vh', background: '#141414' }}>
 
       {/* Score / Streak / Best */}
       <div className="flex rounded-2xl overflow-hidden" style={{ border: '1px solid #2a2a2a' }}>
         {[{ label: 'Score', value: score, color: '#fff' }, { label: 'Streak', value: streak, color: '#fb923c' }, { label: 'Best', value: best, color: '#facc15' }]
           .map(({ label, value, color }, i) => (
-            <div key={label} className="flex flex-col items-center px-10 py-4"
+            <div key={label} className="flex flex-col items-center px-6 sm:px-10 py-4"
               style={{ background: '#181818', borderRight: i < 2 ? '1px solid #2a2a2a' : 'none' }}>
               <p className="text-xs uppercase tracking-widest mb-1" style={{ color: '#555' }}>{label}</p>
               <p className="text-3xl font-black" style={{ color }}>{value}</p>
@@ -244,7 +244,7 @@ export default function GamePage() {
       </div>
 
       {/* Current actor */}
-      <div className="text-center px-6 py-5 rounded-2xl" style={{ background: '#181818', border: '1px solid #333', minWidth: 280 }}>
+      <div className="text-center px-6 py-5 rounded-2xl w-full max-w-sm" style={{ background: '#181818', border: '1px solid #333' }}>
         <p className="text-gray-500 text-xs uppercase tracking-wide mb-2">Which movies has this actor appeared in?</p>
         <p className="text-white text-3xl font-black">{actor}</p>
       </div>

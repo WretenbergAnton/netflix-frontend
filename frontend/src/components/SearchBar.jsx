@@ -61,7 +61,7 @@ export default function SearchBar() {
         onBlur={() => setFocused(false)}
         placeholder="Search movies..."
         className="w-full pl-4 pr-4 py-2 rounded-lg text-white text-sm outline-none transition w-full"
-        style={{ background: '#2a2a2a', border: `1px solid ${focused || query.length > 0 ? '#E50914' : '#444'}` }}
+        style={{ background: '#2a2a2a', border: `1px solid ${focused || query.length > 0 ? '#E50914' : '#444'}`, fontSize: 16 }}
       />
 
       {/* Dropdown with search results */}

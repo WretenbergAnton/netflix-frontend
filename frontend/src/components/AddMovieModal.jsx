@@ -42,7 +42,7 @@ export default function AddMovieModal({ onClose, onAdd }) {
   }
 
   const inputCls = 'w-full px-3 py-2 rounded text-white text-sm outline-none focus:ring-1'
-  const inputStyle = { background: '#2a2a2a', border: '1px solid #444', '--tw-ring-color': '#E50914' }
+  const inputStyle = { background: '#2a2a2a', border: '1px solid #444', '--tw-ring-color': '#E50914', fontSize: 16 }
 
   return (
     <div

@@ -167,11 +167,11 @@ function FilterBar({ filters, onChange }) {
           style={{ background: '#2a2a2a', border: `1px solid ${filters.minYear || filters.maxYear ? '#E50914' : '#444'}` }}>
           <input type="number" value={filters.minYear} placeholder="From" min="1900" max="2025"
             onChange={(e) => onChange({ ...filters, minYear: e.target.value })}
-            style={{ background: 'transparent', border: 'none', color: '#ccc', outline: 'none', width: 40, fontSize: 13 }} />
+            style={{ background: 'transparent', border: 'none', color: '#ccc', outline: 'none', width: 40, fontSize: 16 }} />
           <span style={{ color: '#555' }}>–</span>
           <input type="number" value={filters.maxYear} placeholder="To" min="1900" max="2025"
             onChange={(e) => onChange({ ...filters, maxYear: e.target.value })}
-            style={{ background: 'transparent', border: 'none', color: '#ccc', outline: 'none', width: 32, fontSize: 13 }} />
+            style={{ background: 'transparent', border: 'none', color: '#ccc', outline: 'none', width: 32, fontSize: 16 }} />
         </div>
 
         {/* Min rating */}

@@ -97,27 +97,42 @@ function AppContent({ user, logout }) {
           </div>
         </div>
 
-        {/* Mobile dropdown menu */}
-        {menuOpen && (
-          <div className="sm:hidden px-4 pb-4 flex flex-col gap-4" style={{ borderTop: '1px solid #2a2a2a' }}>
-            {navLink('Home', 'home')}
-            {navLink('Stats', 'stats')}
-            {navLink('Game', 'game')}
-            <button
-              onClick={() => go('mylist')}
-              className="text-sm font-medium transition flex items-center gap-1 text-left"
-              style={{ color: page === 'mylist' ? 'white' : '#b3b3b3' }}
-            >
-              My List {favorites.length > 0 && (
-                <span className="text-xs rounded-full px-1.5 py-0.5 font-bold" style={{ background: '#E50914', color: 'white' }}>
-                  {favorites.length}
-                </span>
-              )}
-            </button>
-            <SearchBar />
-          </div>
-        )}
       </nav>
+
+      {/* Full-screen mobile menu overlay */}
+      <div
+        className="fixed inset-0 z-30 flex flex-col items-center justify-center gap-8 sm:hidden transition-all duration-300"
+        style={{
+          background: 'rgba(20,20,20,0.97)',
+          opacity: menuOpen ? 1 : 0,
+          pointerEvents: menuOpen ? 'auto' : 'none',
+          transform: menuOpen ? 'translateY(0)' : 'translateY(-16px)',
+        }}
+      >
+        {[
+          { label: 'Home', target: 'home' },
+          { label: 'Stats', target: 'stats' },
+          { label: 'Game', target: 'game' },
+          { label: 'My List', target: 'mylist' },
+        ].map(({ label, target }) => (
+          <button
+            key={target}
+            onClick={() => go(target)}
+            className="text-3xl font-bold transition-colors duration-200"
+            style={{ color: page === target ? '#E50914' : 'white' }}
+          >
+            {label}
+            {target === 'mylist' && favorites.length > 0 && (
+              <span className="ml-2 text-sm rounded-full px-2 py-0.5 font-bold align-middle" style={{ background: '#E50914', color: 'white' }}>
+                {favorites.length}
+              </span>
+            )}
+          </button>
+        ))}
+        <div className="w-64 mt-4">
+          <SearchBar />
+        </div>
+      </div>
 
       {page === 'home' && (
         <>
