@@ -16,6 +16,7 @@ function AppContent({ user, logout }) {
   const [homeGenre, setHomeGenre] = useState('')
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const { favorites } = useFavoritesContext()
 
   useEffect(() => {
@@ -74,7 +75,7 @@ function AppContent({ user, logout }) {
 
           {/* Desktop search */}
           <div className="hidden sm:flex flex-1 justify-center mx-4">
-            <SearchBar />
+            <SearchBar mobileOpen={false} onMobileClose={() => {}} />
           </div>
 
           {/* Desktop profile */}
@@ -82,8 +83,9 @@ function AppContent({ user, logout }) {
             <ProfileMenu user={user} onLogout={logout} />
           </div>
 
-          {/* Mobile: profile + hamburger */}
+          {/* Mobile: search icon + profile + hamburger */}
           <div className="flex sm:hidden items-center gap-3 ml-auto">
+            <button onClick={() => { setSearchOpen(true); setMenuOpen(false) }} aria-label="Search" className="text-white text-xl">🔍</button>
             <ProfileMenu user={user} onLogout={logout} />
             <button
               onClick={() => setMenuOpen((o) => !o)}
@@ -129,10 +131,10 @@ function AppContent({ user, logout }) {
             )}
           </button>
         ))}
-        <div className="w-64 mt-4">
-          <SearchBar />
-        </div>
       </div>
+
+      {/* Mobile search overlay — triggered by the search icon */}
+      <SearchBar mobileOpen={searchOpen} onMobileClose={() => setSearchOpen(false)} />
 
       {page === 'home' && (
         <>

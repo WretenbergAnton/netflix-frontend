@@ -14,17 +14,17 @@ const SEARCH_QUERY = gql`
   }
 `
 
-export default function SearchBar() {
+// mobileOpen — controlled by the parent (search icon in nav bar)
+// onMobileClose — called when the user taps Cancel
+export default function SearchBar({ mobileOpen = false, onMobileClose = () => {} }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const [focused, setFocused] = useState(false)
-  const inputRef = useRef()
   const ref = useRef()
 
-  // useLazyQuery lets us run the search manually (not automatically on load)
   const [search, { data, loading }] = useLazyQuery(SEARCH_QUERY)
 
-  // Close when clicking outside (desktop only — mobile uses the ✕ button)
+  // Close desktop dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(e) {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false)
@@ -53,6 +53,7 @@ export default function SearchBar() {
     setQuery('')
     setOpen(false)
     setFocused(false)
+    onMobileClose()
   }
 
   const results = data?.searchMovies ?? []
@@ -60,7 +61,7 @@ export default function SearchBar() {
 
   return (
     <>
-      {/* Desktop search — inline dropdown */}
+      {/* Desktop — inline dropdown */}
       <div ref={ref} className="hidden sm:block w-full max-w-md relative">
         <input
           type="text"
@@ -69,7 +70,7 @@ export default function SearchBar() {
           onFocus={() => { setFocused(true); if (query.length >= 2) setOpen(true) }}
           onBlur={() => setFocused(false)}
           placeholder="Search movies..."
-          className="w-full pl-4 pr-4 py-2 rounded-lg text-white outline-none transition"
+          className="w-full px-4 py-2 rounded-lg text-white outline-none transition"
           style={{ background: '#2a2a2a', border: `1px solid ${active ? '#E50914' : '#444'}`, fontSize: 16 }}
         />
         {open && query.length >= 2 && (
@@ -91,27 +92,10 @@ export default function SearchBar() {
         )}
       </div>
 
-      {/* Mobile search — full-screen overlay when active */}
-      <div className="sm:hidden w-full">
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={handleChange}
-          onFocus={() => setFocused(true)}
-          placeholder="Search movies..."
-          className="w-full pl-4 pr-4 py-2.5 rounded-lg text-white outline-none transition"
-          style={{ background: '#2a2a2a', border: `1px solid ${active ? '#E50914' : '#444'}`, fontSize: 16 }}
-        />
-      </div>
-
-      {/* Mobile full-screen results overlay */}
-      {focused && (
-        <div
-          className="sm:hidden fixed inset-0 z-50 flex flex-col"
-          style={{ background: '#141414' }}
-        >
-          {/* Sticky search bar at top */}
+      {/* Mobile — full-screen overlay, shown when mobileOpen is true */}
+      {mobileOpen && (
+        <div className="sm:hidden fixed inset-0 z-50 flex flex-col" style={{ background: '#141414' }}>
+          {/* Search bar fixed at top */}
           <div className="flex items-center gap-3 px-4 py-3" style={{ background: '#181818', borderBottom: '1px solid #2a2a2a' }}>
             <input
               autoFocus
