@@ -81,7 +81,7 @@ function AppContent({ user, logout }) {
 
           {/* Desktop profile */}
           <div className="hidden sm:block flex-shrink-0">
-            <ProfileMenu user={user} onLogout={logout} />
+            <ProfileMenu user={user} onLogout={logout} onSettings={() => setPage('settings')} />
           </div>
 
           {/* Mobile: search + hamburger only (profile is in Settings) */}
@@ -135,7 +135,7 @@ function AppContent({ user, logout }) {
       </div>
 
       {/* Mobile search overlay — triggered by the search icon */}
-      <SearchBar mobileOpen={searchOpen} onMobileClose={() => setSearchOpen(false)} />
+      <SearchBar mobileOnly mobileOpen={searchOpen} onMobileClose={() => setSearchOpen(false)} />
 
       {page === 'home' && (
         <>

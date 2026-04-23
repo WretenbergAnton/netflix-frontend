@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 
-// Dropdown profile menu showing the user's avatar and a sign-out button
-export default function ProfileMenu({ user, onLogout }) {
+// Dropdown profile menu showing the user's avatar, a settings link, and a sign-out button
+export default function ProfileMenu({ user, onLogout, onSettings }) {
   const [open, setOpen] = useState(false)
   const ref = useRef()
 
@@ -45,10 +45,17 @@ export default function ProfileMenu({ user, onLogout }) {
           </div>
 
           <button
-            onClick={onLogout}
-            className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition flex items-center gap-2"
+            onClick={() => { onSettings?.(); setOpen(false) }}
+            className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition"
           >
-            <span>Sign out</span>
+            Settings
+          </button>
+          <button
+            onClick={onLogout}
+            className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition"
+            style={{ borderTop: '1px solid #2e2e2e' }}
+          >
+            Sign out
           </button>
         </div>
       )}

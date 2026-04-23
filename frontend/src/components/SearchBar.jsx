@@ -16,7 +16,8 @@ const SEARCH_QUERY = gql`
 
 // mobileOpen — controlled by the parent (search icon in nav bar)
 // onMobileClose — called when the user taps Cancel
-export default function SearchBar({ mobileOpen = false, onMobileClose = () => {} }) {
+// mobileOnly — skip rendering the desktop search bar (used when another instance handles desktop)
+export default function SearchBar({ mobileOpen = false, onMobileClose = () => {}, mobileOnly = false }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -61,8 +62,8 @@ export default function SearchBar({ mobileOpen = false, onMobileClose = () => {}
 
   return (
     <>
-      {/* Desktop — inline dropdown */}
-      <div ref={ref} className="hidden sm:block w-full max-w-md relative">
+      {/* Desktop — inline dropdown (skipped when mobileOnly) */}
+      {!mobileOnly && <div ref={ref} className="hidden sm:block w-full max-w-md relative">
         <input
           type="text"
           value={query}
@@ -90,7 +91,7 @@ export default function SearchBar({ mobileOpen = false, onMobileClose = () => {}
             )}
           </div>
         )}
-      </div>
+      </div>}
 
       {/* Mobile — full-screen overlay, shown when mobileOpen is true */}
       {mobileOpen && (
