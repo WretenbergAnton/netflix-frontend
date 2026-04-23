@@ -79,22 +79,18 @@ export default function GamePage() {
   const [search, setSearch] = useState('')
   const [started, setStarted] = useState(false)
 
-  // Load all movies and build an actor → movies map
+  // Load movies and build an actor → movies map
   useEffect(() => {
     async function load() {
-      const first = await client.query({ query: QUERY, variables: { limit: 1000, offset: 0 } })
-      const total = first.data?.movies?.totalCount ?? 0
-      const firstBatch = first.data?.movies?.movies ?? []
-
-      const pages = Math.ceil((total - 1000) / 1000)
-      const rest = await Promise.all(
-        Array.from({ length: pages }, (_, i) =>
-          client.query({ query: QUERY, variables: { limit: 1000, offset: (i + 1) * 1000 } })
+      // Fetch 3 pages of 1000 = 3000 movies, enough variety for the game
+      const pages = await Promise.all(
+        [0, 1, 2].map((i) =>
+          client.query({ query: QUERY, variables: { limit: 1000, offset: i * 1000 } })
             .then((r) => r.data?.movies?.movies ?? []).catch(() => [])
         )
       )
 
-      const pool = [...firstBatch, ...rest.flat()]
+      const pool = pages.flat()
       setMovies(pool)
 
       const map = {}

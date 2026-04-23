@@ -14,5 +14,6 @@ ENV VITE_GRAPHQL_URL=$VITE_GRAPHQL_URL
 ENV VITE_TMDB_TOKEN=$VITE_TMDB_TOKEN
 
 RUN npm run build
+RUN npm prune --omit=dev
 
 CMD ["node", "server/index.js"]

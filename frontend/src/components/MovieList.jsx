@@ -64,10 +64,12 @@ function groupByGenre(movies) {
 function GenreRows({ baseOffset, filters }) {
   const client = useApolloClient()
   const [genreMap, setGenreMap] = useState({})
+  const [error, setError] = useState(null)
   const { favorites } = useFavoritesContext()
 
   useEffect(() => {
     setGenreMap({})
+    setError(null)
     async function load() {
       // Fetch 2 pages of 100 movies
       const pages = await Promise.all(
@@ -87,8 +89,10 @@ function GenreRows({ baseOffset, filters }) {
 
       setGenreMap(groupByGenre(movies))
     }
-    load()
+    load().catch(() => setError('Could not load movies. Please try again.'))
   }, [client, baseOffset])
+
+  if (error) return <p className="text-red-400 text-sm py-8">{error}</p>
 
   // Apply year and rating filters to a list of movies
   function applyFilters(movies) {
@@ -194,9 +198,17 @@ function FilterBar({ filters, onChange }) {
   )
 }
 
-export default function MovieList() {
+export default function MovieList({ initialGenre = '', onGenreUsed }) {
   const [offset, setOffset] = useState(0)
-  const [filters, setFilters] = useState({ genre: '', minYear: '', maxYear: '', minRating: '' })
+  const [filters, setFilters] = useState({ genre: initialGenre, minYear: '', maxYear: '', minRating: '' })
+
+  // When a genre is passed in from the charts page, apply it once then clear it
+  useEffect(() => {
+    if (initialGenre) {
+      setFilters((f) => ({ ...f, genre: initialGenre }))
+      onGenreUsed?.()
+    }
+  }, [initialGenre])
   const [showAddModal, setShowAddModal] = useState(false)
   const { data } = useQuery(MOVIES_QUERY, { variables: { limit: 1, offset } })
   const { customMovies, addMovie, removeMovie } = useCustomMovies()

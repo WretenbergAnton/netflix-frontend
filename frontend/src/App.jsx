@@ -12,6 +12,7 @@ const AUTH_SERVER = import.meta.env.VITE_AUTH_SERVER_URL ?? 'http://localhost:30
 
 function AppContent({ user, logout }) {
   const [page, setPage] = useState('home')
+  const [homeGenre, setHomeGenre] = useState('')
   const [scrolled, setScrolled] = useState(false)
   const { favorites } = useFavoritesContext()
 
@@ -72,13 +73,15 @@ function AppContent({ user, logout }) {
         <>
           <HeroBanner />
           <div className="px-12 pb-12 -mt-4">
-            <MovieList />
+            <MovieList initialGenre={homeGenre} onGenreUsed={() => setHomeGenre('')} />
           </div>
         </>
       )}
 
       {page === 'mylist' && <MyListPage />}
-      {page === 'stats' && <ChartsPage />}
+      {page === 'stats' && (
+        <ChartsPage onGenreClick={(genre) => { setHomeGenre(genre); setPage('home') }} />
+      )}
       {page === 'game' && <GamePage />}
     </div>
   )

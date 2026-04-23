@@ -33,28 +33,23 @@ function ChartCard({ title, children }) {
   )
 }
 
-export default function ChartsPage() {
+export default function ChartsPage({ onGenreClick }) {
   const client = useApolloClient()
   const [movies, setMovies] = useState([])
 
   useEffect(() => {
-    async function loadAll() {
-      const first = await client.query({ query: QUERY, variables: { limit: 1000, offset: 0 } })
-      const total = first.data?.movies?.totalCount ?? 0
-      const firstBatch = first.data?.movies?.movies ?? []
-
-      const remaining = Math.ceil((total - 1000) / 1000)
-      const rest = await Promise.all(
-        Array.from({ length: remaining }, (_, i) =>
-          client.query({ query: QUERY, variables: { limit: 1000, offset: (i + 1) * 1000 } })
+    // Fetch 3 pages of 1000 = 3000 movies, enough for representative statistics
+    async function load() {
+      const pages = await Promise.all(
+        [0, 1, 2].map((i) =>
+          client.query({ query: QUERY, variables: { limit: 1000, offset: i * 1000 } })
             .then((r) => r.data?.movies?.movies ?? [])
             .catch(() => [])
         )
       )
-
-      setMovies([...firstBatch, ...rest.flat()])
+      setMovies(pages.flat())
     }
-    loadAll()
+    load()
   }, [client])
 
   if (movies.length === 0) return (
@@ -121,9 +116,19 @@ export default function ChartsPage() {
       <div className="grid grid-cols-2 gap-6" style={{ maxWidth: 1100 }}>
         {/* Top genres — full width */}
         <div className="col-span-2">
-          <ChartCard title="Top 10 Genres">
+          <ChartCard title="Top 10 Genres — click a bar to browse that genre">
             <div style={{ height: 280 }}>
-              <Bar data={genreData} options={{ ...baseOptions, maintainAspectRatio: false }} />
+              <Bar
+                data={genreData}
+                options={{
+                  ...baseOptions,
+                  maintainAspectRatio: false,
+                  cursor: 'pointer',
+                  onClick: (_, elements) => {
+                    if (elements[0]) onGenreClick?.(topGenres[elements[0].index][0])
+                  },
+                }}
+              />
             </div>
           </ChartCard>
         </div>
