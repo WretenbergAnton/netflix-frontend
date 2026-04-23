@@ -85,7 +85,7 @@ function AppContent({ user, logout }) {
 
           {/* Mobile: search icon + profile + hamburger */}
           <div className="flex sm:hidden items-center gap-3 ml-auto">
-            <button onClick={() => { setSearchOpen(true); setMenuOpen(false) }} aria-label="Search" className="text-white text-xl">🔍</button>
+            <button onClick={() => { setSearchOpen(true); setMenuOpen(false) }} className="text-sm font-medium" style={{ color: '#b3b3b3' }}>Search</button>
             <ProfileMenu user={user} onLogout={logout} />
             <button
               onClick={() => setMenuOpen((o) => !o)}
